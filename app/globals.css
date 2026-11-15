@@ -1,16 +1,209 @@
 @import "tailwindcss";
 
-/* TODO: define your own colors here and use them as Tailwind classes,
-   e.g. --color-brand: #2f5bd9;  ->  className="text-brand bg-brand" */
-@theme {
-  --color-brand: #2f5bd9;
+/* Dark mode is controlled by a "dark" class on <html> (see ThemeToggle). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────────────────────
+   THEME
+   Every color is a CSS variable, so light/dark mode only swaps
+   the values here. All text colors pass WCAG AA contrast.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --bg: #f3efe6; /* warm paper */
+  --bg-elev: #fbf9f4; /* cards */
+  --ink: #16140f; /* main text */
+  --ink-soft: #4a463d; /* body text */
+  --ink-mute: #6b6559; /* labels, meta */
+  --line: #ddd6c6; /* borders */
+  --accent: #c2380e; /* vermilion */
+  --accent-ink: #ffffff; /* text on accent */
+  --grain-opacity: 0.35;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0f0f0d;
+  --bg-elev: #181815;
+  --ink: #efeadf;
+  --ink-soft: #c2bcae;
+  --ink-mute: #9a9487;
+  --line: #2c2b27;
+  --accent: #ff6b3d;
+  --accent-ink: #120a06;
+  --grain-opacity: 0.18;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-ink: var(--ink);
+  --color-soft: var(--ink-soft);
+  --color-mute: var(--ink-mute);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+
+  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-sans: "Inter Tight Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: #ffffff;
-  color: #171717;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Subtle paper grain over the whole page */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.dark body::before {
+  mix-blend-mode: screen;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Clear keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Display type: Fraunces with optical sizing */
+.font-display {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50;
+  letter-spacing: -0.02em;
+}
+
+/* Underline that grows on hover */
+.link-u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.link-u:hover,
+.link-u:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────
+   Only hides content when JS is running (html.js), so the page
+   still works with JS off. Respects reduced motion. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero name: letters rise in */
+.js .rise > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(var(--i) * 45ms + 100ms);
+}
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Skills ticker */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-wrap:hover .marquee {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pulsing "available" dot */
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: inherit;
+  animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+.animate-pop {
+  animation: pop 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js .reveal,
+  .js .rise > span {
+    opacity: 1;
+    transform: none;
+  }
+  .marquee {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+  }
 }
