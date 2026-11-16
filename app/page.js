@@ -5,7 +5,7 @@ import { withImages } from "@/lib/images";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import AnimatedNumber from "@/components/AnimatedNumber";
-import WorkShowcase from "@/components/WorkShowcase";
+import WorkGallery from "@/components/WorkGallery";
 import ExperienceList from "@/components/ExperienceList";
 import ShowMore from "@/components/ShowMore";
 import CopyEmail from "@/components/CopyEmail";
@@ -128,8 +128,8 @@ export default function Home() {
       </section>
 
       {/* ── Selected work ────────────────────────────────── */}
-      <Section id="work" index="01" title="Selected work." intro="Eight projects, from design systems to national health care. Keep scrolling to move through them, or pick a category. Each one opens a full case study.">
-        <WorkShowcase projects={projects} />
+      <Section id="work" index="01" title="Selected work." intro="Eight projects, from design systems to national health care. Scroll, swipe or drag through them, or pick a category. Each one opens a full case study.">
+        <WorkGallery projects={projects} />
       </Section>
 
       {/* ── About ────────────────────────────────────────── */}

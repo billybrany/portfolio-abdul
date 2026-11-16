@@ -202,26 +202,37 @@ body::before {
   animation: pop 0.18s ease-out;
 }
 
+/* Reduced motion: no movement, but gentle fades stay (fading isn't motion). */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-  .js .reveal,
-  .js .rise > span {
-    opacity: 1;
+  .js .reveal {
     transform: none;
+    transition: opacity 0.7s ease var(--delay, 0ms);
+  }
+  .js .rise > span {
+    transform: none;
+    animation-name: fade-only;
   }
   .marquee {
     animation: none;
     flex-wrap: wrap;
     width: auto;
+  }
+  .pulse::after {
+    animation: none;
+  }
+  :where(a.rounded-full, button.rounded-full, a.btn, button.btn):is(:hover, :active) {
+    transform: none;
+  }
+}
+@keyframes fade-only {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -383,11 +394,43 @@ section[tabindex="-1"]:focus {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal .words > span,
-  .js .reveal .img-reveal,
-  .js .reveal .img-reveal > * {
-    opacity: 1;
+  .js .reveal .words > span {
     transform: none;
-    clip-path: none;
   }
+  .js .reveal .img-reveal {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .js .reveal.is-in .img-reveal {
+    opacity: 1;
+  }
+  .js .reveal .img-reveal > * {
+    transform: none;
+  }
+  .num.num-in,
+  .animate-fade-up,
+  .arrived h2 {
+    animation-name: fade-only;
+  }
+  .arrived h2::after {
+    display: none;
+  }
+}
+
+/* ── Work gallery ──────────────────────────────────────────── */
+.gallery {
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.gallery.is-dragging {
+  scroll-snap-type: none;
+}
+.gallery.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+.gallery.is-dragging a {
+  pointer-events: none;
 }

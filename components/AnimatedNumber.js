@@ -25,8 +25,9 @@ export default function AnimatedNumber({ value, duration = 1600, className = "" 
     const el = ref.current;
     const tokens = text.match(NUM);
     if (!el || !tokens) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!("IntersectionObserver" in window)) return;
+    // Reduced motion: no counting, just a soft fade-in of the final value.
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const targets = tokens.map((t) => parseFloat(t.replace(/,/g, "")));
     const render = (k) => {
@@ -45,8 +46,9 @@ export default function AnimatedNumber({ value, duration = 1600, className = "" 
           render(t === 1 ? 1 : 1 - Math.pow(2, -10 * t)); // easeOutExpo
           if (t < 1) frame = requestAnimationFrame(tick);
         };
-        render(0);
         el.classList.add("num-in");
+        if (reduce) return;
+        render(0);
         frame = requestAnimationFrame(tick);
       },
       { threshold: 0.6 },
