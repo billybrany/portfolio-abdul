@@ -144,15 +144,15 @@ export default function Home() {
           <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
             {cv.about.map((a, i) => (
               <Reveal key={a.title} delay={i * 70} className="border-t border-line pt-5">
-                <dt className="flex gap-3 font-mono text-xs uppercase tracking-[0.18em] text-mute">
-                  <span className="text-accent">{String(i + 1).padStart(2, "0")}</span>
+                <dt className="flex items-baseline gap-2.5 text-lg font-semibold leading-snug text-ink">
+                  <span className="font-mono text-xs font-medium text-accent">{String(i + 1).padStart(2, "0")}</span>
                   {a.title}
                 </dt>
                 <dd className="mt-3 leading-relaxed">{a.text}</dd>
               </Reveal>
             ))}
             <Reveal delay={350} className="border-t border-line pt-5">
-              <dt className="font-mono text-xs uppercase tracking-[0.18em] text-mute">Languages</dt>
+              <dt className="text-lg font-semibold leading-snug text-ink">Languages</dt>
               <dd className="mt-3 space-y-1">
                 {cv.languages.map((l) => (
                   <p key={l.name}>
@@ -164,7 +164,7 @@ export default function Home() {
           </dl>
         </div>
         <Reveal className="mt-14 rounded-3xl border border-line bg-elev p-6 sm:p-8">
-          <Label>Outside work</Label>
+          <p className="text-lg font-semibold text-ink">Outside work</p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {cv.interests.map((x) => (
               <li key={x} className="flex gap-3 text-soft">
