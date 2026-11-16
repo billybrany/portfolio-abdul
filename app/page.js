@@ -4,8 +4,8 @@ import { withBase } from "@/lib/withBase";
 import { withImages } from "@/lib/images";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
-import CountUp from "@/components/CountUp";
-import WorkGrid from "@/components/WorkGrid";
+import AnimatedNumber from "@/components/AnimatedNumber";
+import WorkShowcase from "@/components/WorkShowcase";
 import ExperienceList from "@/components/ExperienceList";
 import ShowMore from "@/components/ShowMore";
 import CopyEmail from "@/components/CopyEmail";
@@ -120,7 +120,7 @@ export default function Home() {
                 {s.note && <span className="block text-xs text-mute">{s.note}</span>}
               </dt>
               <dd className="font-display text-5xl leading-none sm:text-6xl">
-                <CountUp value={s.value} suffix={s.suffix} />
+                <AnimatedNumber value={`${s.value}${s.suffix || ""}`} />
               </dd>
             </Reveal>
           ))}
@@ -128,8 +128,8 @@ export default function Home() {
       </section>
 
       {/* ── Selected work ────────────────────────────────── */}
-      <Section id="work" index="01" title="Selected work." intro="Five flagship projects and three supporting ones, from design systems to national health care. Each has a full case study.">
-        <WorkGrid projects={projects} />
+      <Section id="work" index="01" title="Selected work." intro="Eight projects, from design systems to national health care. Keep scrolling to move through them, or pick a category. Each one opens a full case study.">
+        <WorkShowcase projects={projects} />
       </Section>
 
       {/* ── About ────────────────────────────────────────── */}
@@ -198,7 +198,7 @@ export default function Home() {
                   </p>
                 </div>
                 <p className="text-end">
-                  <span className="block font-display text-5xl leading-none text-accent">{s.years}</span>
+                  <span className="block font-display text-5xl leading-none text-accent"><AnimatedNumber value={s.years} /></span>
                   <span className="font-mono text-[11px] uppercase tracking-widest text-mute">years</span>
                 </p>
               </div>

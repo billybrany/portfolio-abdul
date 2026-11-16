@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Reveal from "@/components/Reveal";
 
 // A reusable wrapper for each part of the page (Experience, Projects, ...).
@@ -19,9 +20,18 @@ export default function Section({ id, index, title, intro, children }) {
         <div className="sm:col-span-9">
           <h2
             id={`${id}-title`}
+            aria-label={title}
             className="font-display text-4xl leading-[1.05] sm:text-6xl"
           >
-            {title}
+            {/* words rise in one after another */}
+            <span className="words" aria-hidden="true">
+              {title.split(" ").map((w, i, all) => (
+                <Fragment key={i}>
+                  <span style={{ "--w": i }}>{w}</span>
+                  {i < all.length - 1 && " "}
+                </Fragment>
+              ))}
+            </span>
           </h2>
           {intro && (
             <p className="mt-4 max-w-xl text-lg text-soft">{intro}</p>

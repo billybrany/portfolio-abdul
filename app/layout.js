@@ -10,6 +10,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import CommandPalette from "@/components/CommandPalette";
+import SmoothAnchors from "@/components/SmoothAnchors";
+import ScrollHue from "@/components/ScrollHue";
 import { cv } from "@/data/cv";
 
 // Shown in the browser tab, on Google, and in link previews.
@@ -41,7 +43,10 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="flex min-h-screen flex-col">
+      {/* suppressHydrationWarning: browser extensions (e.g. Brave / Bitdefender)
+          add attributes like bis_register to <body> before React loads,
+          which caused the "attributes didn't match" error in dev. */}
+      <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         <a
           href="#main"
           className="sr-only z-[70] rounded-full bg-accent px-4 py-2 text-accent-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
@@ -55,6 +60,8 @@ export default function RootLayout({ children }) {
         </main>
         <Footer />
         <CommandPalette />
+        <SmoothAnchors />
+        <ScrollHue />
       </body>
     </html>
   );

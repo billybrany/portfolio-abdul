@@ -16,6 +16,11 @@ export default function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Never leave content hidden: no observer support → show immediately.
+    if (!("IntersectionObserver" in window)) {
+      el.classList.add("is-in");
+      return;
+    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

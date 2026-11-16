@@ -4,6 +4,7 @@ import { cv } from "@/data/cv";
 import { withImages } from "@/lib/images";
 import Reveal from "@/components/Reveal";
 import ProjectVisual from "@/components/ProjectVisual";
+import AnimatedNumber from "@/components/AnimatedNumber";
 
 // A static site must know every project page at build time.
 // This builds one page per project in data/cv.js.
@@ -188,7 +189,7 @@ export default async function ProjectPage({ params }) {
           {project.results.map((r, k) => (
             <Reveal key={r.label} delay={k * 90} className="border-t border-bg/20 pt-6">
               <dd className="font-display text-5xl leading-none text-accent-inv sm:text-6xl">
-                {r.value}
+                <AnimatedNumber value={r.value} />
                 {r.unit && <span className="ms-2 text-2xl text-bg/70">{r.unit}</span>}
               </dd>
               <dt className="mt-3 text-lg">{r.label}</dt>

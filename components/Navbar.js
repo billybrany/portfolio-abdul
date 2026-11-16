@@ -93,8 +93,11 @@ export default function Navbar() {
           className="group flex items-center gap-3"
           aria-label={`${cv.name}, home`}
         >
-          <span className="grid size-10 place-items-center rounded-full bg-ink font-display text-sm italic text-bg transition-transform duration-500 group-hover:rotate-[360deg]">
-            {initials}
+          {/* mini Yara circle: its color ring turns with the page scroll */}
+          <span data-scroll-hue className="hue-ring grid size-10 place-items-center rounded-full p-[2px]">
+            <span className="grid size-full place-items-center rounded-full bg-ink font-display text-sm italic text-bg transition-transform duration-500 group-hover:rotate-[360deg]">
+              {initials}
+            </span>
           </span>
           <span className="hidden font-medium xl:inline">{cv.name}</span>
         </Link>

@@ -41,7 +41,7 @@ export default function ProjectVisual({
   if (isMobile && hasFile && fit === "natural") {
     return (
       <figure className={className}>
-        <div className="mx-auto w-full max-w-[300px] rounded-[2.4rem] border border-line bg-ink p-2 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.55)]">
+        <div className="img-reveal mx-auto w-full max-w-[300px] rounded-[2.4rem] border border-line bg-ink p-2 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.55)]">
           <div className="overflow-hidden rounded-[1.9rem]">{img}</div>
         </div>
         {caption && <Caption image={image} />}
@@ -52,7 +52,7 @@ export default function ProjectVisual({
   return (
     <figure className={className}>
       <div
-        className="relative overflow-hidden rounded-[1.25rem] border border-line bg-elev"
+        className="img-reveal relative overflow-hidden rounded-[1.25rem] border border-line bg-elev"
         style={fit === "cover" || !hasFile ? { aspectRatio: ratio } : undefined}
       >
         {hasFile ? (
