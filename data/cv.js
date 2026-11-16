@@ -49,6 +49,78 @@ export const cv = {
   // The PDF in /public. Leave "" to hide the résumé buttons.
   cvFile: "Yara_Al-Mansouri_CV.pdf",
 
+  // ── Page text ──
+  // Every heading and line of text on the site lives here too, so this file
+  // holds everything a visitor reads. Section `label` is the big "01 / Work" tag.
+  site: {
+    heroKicker: "Portfolio · 16 years of product work",
+    heroLine: "40+ products across health tech, fintech, education and mobility, used by over 9 million people.",
+    heroCtaWork: "Explore my work",
+    heroCtaResume: "View résumé",
+    sections: {
+      work: {
+        index: "01",
+        label: "Work",
+        title: "Selected work.",
+        intro: "Eight projects, from design systems to national health care. Scroll, swipe or drag through them, or pick a category. Each one opens a full case study.",
+        hint: "Scroll, drag or use ← → to browse. Click a project to open its case study.",
+      },
+      about: {
+        index: "02",
+        label: "About",
+        title: "Designer, engineer, researcher, leader.",
+        languages: "Languages",
+        interests: "Outside work",
+      },
+      experience: {
+        index: "03",
+        label: "Experience",
+        title: "Sixteen years, twelve roles.",
+        intro: "From freelance design at university to leading 64 people. Open any role for the details.",
+      },
+      skills: {
+        index: "04",
+        label: "Skills",
+        title: "What I work with.",
+        intro: "Ten areas, with the proficiency level and years of experience stated in my CV.",
+      },
+      research: {
+        index: "05",
+        label: "Research",
+        title: "Education & research.",
+        intro: "A PhD in Human-Computer Interaction focused on Arabic interfaces, built on a career-long habit of learning.",
+        patents: "Patents",
+        publications: "Publications",
+        certifications: "Certifications",
+        certificationsNote: "19 earned, 1 in progress. Issuers and credential IDs are fictional.",
+      },
+      recognition: {
+        index: "06",
+        label: "Recognition",
+        title: "Recognition.",
+        intro: "Awards, talks, media, teaching and the communities I give time to.",
+        speaking: "Speaking",
+        media: "Media",
+        community: "Teaching, leadership & volunteering",
+        communityNote: "Held alongside the full-time roles above.",
+      },
+      contact: {
+        index: "07",
+        label: "Contact",
+        title: "Let's build something",
+        titleEmphasis: "together.",
+        text: "Based in Riyadh, Saudi Arabia. The fastest way to reach me is email.",
+        fictionalNote: "These are the fictional contact details from the Portfolio Summit CV, shown as text rather than links.",
+      },
+    },
+    caseStudy: {
+      back: "Back to all projects",
+      backShort: "All projects",
+      conceptNote: "Visuals on this page are conceptual product visualizations, not production screenshots.",
+    },
+    footer: "Portfolio Summit 2026 · fictional CV; project visuals are concepts.",
+  },
+
   // ── Career highlights (animated counters on the home page) ──
   stats: [
     { value: 16, label: "Years of experience", note: "Since Jul 2010" },

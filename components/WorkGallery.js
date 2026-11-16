@@ -17,7 +17,7 @@ const Arrow = ({ dir = "right" }) => (
   </svg>
 );
 
-export default function WorkGallery({ projects }) {
+export default function WorkGallery({ projects, hint }) {
   const track = useRef(null);
   const tabs = useRef(null);
   const activeRef = useRef(0);
@@ -305,7 +305,7 @@ export default function WorkGallery({ projects }) {
           <div aria-hidden="true" className="w-[14%] shrink-0 sm:w-[28%] lg:w-[calc(100vw-min(760px,56vw)-6rem)]" />
         </div>
       </div>
-      <p className="mt-2 hidden text-sm text-mute lg:block">Scroll, drag or use ← → to browse. Click a project to open its case study.</p>
+      {hint && <p className="mt-2 hidden text-sm text-mute lg:block">{hint}</p>}
     </div>
   );
 }

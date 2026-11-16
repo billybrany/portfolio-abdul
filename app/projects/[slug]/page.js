@@ -87,13 +87,27 @@ export default async function ProjectPage({ params }) {
 
   return (
     <article className="pb-10">
+      {/* Always-visible way back, floating at the bottom of the screen */}
+      <Link
+        href="/#work"
+        className="fixed bottom-5 left-5 z-40 inline-flex h-12 items-center gap-2.5 rounded-full bg-ink pe-5 ps-2 text-sm font-semibold text-bg shadow-[0_14px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-accent hover:text-accent-ink sm:bottom-7 sm:left-7"
+      >
+        <span className="grid size-8 place-items-center rounded-full bg-bg text-ink" aria-hidden="true">←</span>
+        <span className="hidden sm:inline">{cv.site.caseStudy.back}</span>
+        <span className="sm:hidden">{cv.site.caseStudy.backShort}</span>
+      </Link>
       {/* 1. Introduction */}
       <header className="relative pt-10 sm:pt-16">
         <Reveal>
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.18em] text-mute">
-            <Link href="/#work" className="link-u hover:text-ink">← All work</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">
+            <Link
+              href="/#work"
+              className="group inline-flex h-12 items-center gap-3 rounded-full bg-ink pe-6 ps-2 font-sans text-base font-semibold normal-case tracking-normal text-bg hover:bg-accent hover:text-accent-ink"
+            >
+              <span className="grid size-8 place-items-center rounded-full bg-bg text-ink transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true">←</span>
+              {cv.site.caseStudy.back}
+            </Link>
+            <span aria-current="page" className="ms-1">
               {String(i + 1).padStart(2, "0")} of {String(cv.projects.length).padStart(2, "0")}
             </span>
             <span className="rounded-full border border-line px-2.5 py-1 text-ink">{project.category}</span>
@@ -103,7 +117,7 @@ export default async function ProjectPage({ params }) {
           <p className="mt-6 max-w-2xl text-xl text-soft sm:text-2xl">{project.summary}</p>
         </Reveal>
         {project.nameArabic && (
-          <span aria-hidden="true" dir="rtl" lang="ar" className="font-arabic pointer-events-none absolute end-0 top-10 hidden text-[10rem] font-bold leading-none text-accent opacity-15 lg:block">
+          <span aria-hidden="true" dir="rtl" lang="ar" className="font-arabic pointer-events-none absolute right-0 top-24 hidden text-[10rem] font-bold leading-none text-accent opacity-15 lg:block">
             {project.nameArabic}
           </span>
         )}
@@ -221,9 +235,7 @@ export default async function ProjectPage({ params }) {
           ))}
         </ul>
       </section>
-      <p className="mt-8 text-sm text-mute">
-        Visuals on this page are conceptual product visualizations, not production screenshots.
-      </p>
+      <p className="mt-8 text-sm text-mute">{cv.site.caseStudy.conceptNote}</p>
 
       {/* 12. Next project */}
       <nav aria-label="More projects" className="mt-24 border-t border-line pt-10">
@@ -231,7 +243,7 @@ export default async function ProjectPage({ params }) {
           <Link href={`/projects/${prev.slug}/`} className="link-u font-mono text-xs uppercase tracking-widest text-mute hover:text-ink">
             ← Previous: {prev.name}
           </Link>
-          <Link href="/#work" className="link-u font-mono text-xs uppercase tracking-widest text-mute hover:text-ink">All work</Link>
+          <Link href="/#work" className="inline-flex h-11 items-center gap-2 rounded-full border border-ink px-5 text-sm font-semibold hover:bg-ink hover:text-bg">← {cv.site.caseStudy.back}</Link>
         </div>
         <Link href={`/projects/${next.slug}/`} className="group mt-8 grid items-center gap-8 rounded-[2rem] border border-line p-5 transition hover:border-ink sm:p-8 lg:grid-cols-12">
           <div className="lg:col-span-5">

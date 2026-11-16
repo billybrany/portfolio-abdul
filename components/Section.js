@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 // A reusable wrapper for each part of the page (Experience, Projects, ...).
 // The id lets the navbar jump to it: <a href="#projects">.
 // `index` shows the editorial number (01, 02, ...); `intro` is an optional lead line.
-export default function Section({ id, index, title, intro, children }) {
+export default function Section({ id, index, label, title, intro, children }) {
   return (
     <section
       id={id}
@@ -12,10 +12,14 @@ export default function Section({ id, index, title, intro, children }) {
       className="scroll-mt-24 border-t border-line py-20 sm:py-28"
     >
       <Reveal className="mb-12 grid gap-4 sm:mb-16 sm:grid-cols-12">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-mute sm:col-span-3 sm:pt-4">
-          {index && <span className="text-accent">{index}</span>}
-          {index && " / "}
-          {id}
+        {/* Section tag, e.g. "01  Work": large and easy to spot */}
+        <p className="flex items-center gap-3 sm:col-span-3 sm:pt-3">
+          {index && (
+            <span className="grid h-11 min-w-11 place-items-center rounded-full bg-accent px-3 font-mono text-base font-bold text-accent-ink sm:h-12 sm:min-w-12">
+              {index}
+            </span>
+          )}
+          <span className="text-xl font-semibold uppercase tracking-[0.12em] text-ink sm:text-2xl">{label || id}</span>
         </p>
         <div className="sm:col-span-9">
           <h2

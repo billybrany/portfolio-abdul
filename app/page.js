@@ -45,6 +45,9 @@ function ContactLink({ href, children, className = "" }) {
   );
 }
 
+const site = cv.site;
+const S = site.sections;
+
 export default function Home() {
   const projects = cv.projects.map(withImages);
   const projectNames = Object.fromEntries(cv.projects.map((p) => [p.slug, p.name]));
@@ -61,7 +64,7 @@ export default function Home() {
             <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
             {cv.location}
           </span>
-          <span>Portfolio · 16 years of product work</span>
+          <span>{site.heroKicker}</span>
         </Reveal>
 
         <h1 id="hero-title" aria-label={`${cv.name}, ${cv.credentials}`} className="font-display text-[clamp(3.1rem,9.4vw,8.6rem)] leading-[0.9]">
@@ -80,17 +83,17 @@ export default function Home() {
             </Reveal>
             <Reveal delay={350}>
               <p className="mt-8 max-w-xl text-xl leading-snug text-soft sm:text-2xl">
-                <span className="text-ink">{cv.intro}</span> 40+ products across health tech, fintech, education and mobility, used by over 9 million people.
+                <span className="text-ink">{cv.intro}</span> {site.heroLine}
               </p>
             </Reveal>
             <Reveal delay={450} className="mt-10 flex flex-wrap gap-3">
               <Link href="#work" className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 font-medium text-bg transition hover:bg-accent hover:text-accent-ink">
-                Explore my work
+                {site.heroCtaWork}
                 <span className="transition-transform group-hover:translate-y-0.5"><Arrow down /></span>
               </Link>
               {resume && (
                 <a href={resume} target="_blank" rel="noopener" className="inline-flex h-12 items-center gap-2 rounded-full border border-line px-6 font-medium transition hover:border-ink">
-                  View résumé
+                  {site.heroCtaResume}
                   <span className="font-mono text-xs text-mute">PDF</span>
                 </a>
               )}
@@ -128,12 +131,12 @@ export default function Home() {
       </section>
 
       {/* ── Selected work ────────────────────────────────── */}
-      <Section id="work" index="01" title="Selected work." intro="Eight projects, from design systems to national health care. Scroll, swipe or drag through them, or pick a category. Each one opens a full case study.">
-        <WorkGallery projects={projects} />
+      <Section id="work" {...S.work}>
+        <WorkGallery projects={projects} hint={S.work.hint} />
       </Section>
 
       {/* ── About ────────────────────────────────────────── */}
-      <Section id="about" index="02" title="Designer, engineer, researcher, leader.">
+      <Section id="about" {...S.about}>
         <div className="grid gap-12 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
             <blockquote className="font-display text-3xl leading-tight sm:text-4xl">
@@ -152,7 +155,7 @@ export default function Home() {
               </Reveal>
             ))}
             <Reveal delay={350} className="border-t border-line pt-5">
-              <dt className="text-lg font-semibold leading-snug text-ink">Languages</dt>
+              <dt className="text-lg font-semibold leading-snug text-ink">{S.about.languages}</dt>
               <dd className="mt-3 space-y-1">
                 {cv.languages.map((l) => (
                   <p key={l.name}>
@@ -164,7 +167,7 @@ export default function Home() {
           </dl>
         </div>
         <Reveal className="mt-14 rounded-3xl border border-line bg-elev p-6 sm:p-8">
-          <p className="text-lg font-semibold text-ink">Outside work</p>
+          <p className="text-lg font-semibold text-ink">{S.about.interests}</p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {cv.interests.map((x) => (
               <li key={x} className="flex gap-3 text-soft">
@@ -177,12 +180,12 @@ export default function Home() {
       </Section>
 
       {/* ── Experience ───────────────────────────────────── */}
-      <Section id="experience" index="03" title="Sixteen years, twelve roles." intro="From freelance design at university to leading 64 people. Open any role for the details.">
+      <Section id="experience" {...S.experience}>
         <ExperienceList roles={cv.experience} projectNames={projectNames} />
       </Section>
 
       {/* ── Skills ───────────────────────────────────────── */}
-      <Section id="skills" index="04" title="What I work with." intro="Ten areas, with the proficiency level and years of experience stated in my CV.">
+      <Section id="skills" {...S.skills}>
         <ul className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">
           {cv.skills.map((s, i) => (
             <Reveal as="li" key={s.group} delay={(i % 2) * 80} className="flex flex-col bg-bg p-6 sm:p-8">
@@ -213,7 +216,7 @@ export default function Home() {
       </Section>
 
       {/* ── Education & research ─────────────────────────── */}
-      <Section id="research" index="05" title="Education & research." intro="A PhD in Human-Computer Interaction focused on Arabic interfaces, built on a career-long habit of learning.">
+      <Section id="research" {...S.research}>
         <ol className="grid gap-5 md:grid-cols-3">
           {cv.education.map((e, i) => (
             <Reveal as="li" key={e.degree} delay={(i % 2) * 90} className={`rounded-3xl border border-line p-6 sm:p-8 ${i === 0 ? "bg-ink text-bg md:col-span-3" : "bg-elev"}`}>
@@ -231,7 +234,7 @@ export default function Home() {
 
         <div className="mt-20 grid gap-14 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
-            <h3 className="font-display text-3xl">Patents</h3>
+            <h3 className="font-display text-3xl">{S.research.patents}</h3>
             <ul className="mt-6 space-y-4">
               {cv.patents.map((p) => (
                 <li key={p.title} className="rounded-2xl border border-line bg-elev p-5">
@@ -243,7 +246,7 @@ export default function Home() {
             </ul>
           </Reveal>
           <Reveal delay={100} className="lg:col-span-7">
-            <h3 className="font-display text-3xl">Publications</h3>
+            <h3 className="font-display text-3xl">{S.research.publications}</h3>
             <p className="mt-2 text-sm text-mute">{cv.publicationsNote}</p>
             <ol className="mt-6 border-t border-line">
               {cv.publications.map((p) => (
@@ -261,8 +264,8 @@ export default function Home() {
 
         <Reveal className="mt-20">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <h3 className="font-display text-3xl">Certifications</h3>
-            <p className="text-sm text-mute">19 earned, 1 in progress. Issuers and credential IDs are fictional.</p>
+            <h3 className="font-display text-3xl">{S.research.certifications}</h3>
+            <p className="text-sm text-mute">{S.research.certificationsNote}</p>
           </div>
           <ShowMore initial={6} label="certifications" className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {cv.certifications.map((c) => (
@@ -283,7 +286,7 @@ export default function Home() {
       </Section>
 
       {/* ── Recognition ──────────────────────────────────── */}
-      <Section id="recognition" index="06" title="Recognition." intro="Awards, talks, media, teaching and the communities I give time to.">
+      <Section id="recognition" {...S.recognition}>
         <h3 className="sr-only">Awards</h3>
         <ol className="border-t border-line">
           {cv.awards.map((a, i) => (
@@ -299,7 +302,7 @@ export default function Home() {
         <div className="mt-20 grid gap-14 lg:grid-cols-2">
           <Reveal>
             <div className="flex items-baseline justify-between gap-4">
-              <h3 className="font-display text-3xl">Speaking</h3>
+              <h3 className="font-display text-3xl">{S.recognition.speaking}</h3>
               <p className="text-sm text-mute">{cv.talksNote}</p>
             </div>
             <ul className="mt-6 space-y-5">
@@ -315,7 +318,7 @@ export default function Home() {
             </ul>
           </Reveal>
           <Reveal delay={100}>
-            <h3 className="font-display text-3xl">Media</h3>
+            <h3 className="font-display text-3xl">{S.recognition.media}</h3>
             <ul className="mt-6 grid gap-3">
               {cv.media.map((m) => (
                 <li key={m.title} className="rounded-2xl border border-line bg-elev p-5">
@@ -332,8 +335,8 @@ export default function Home() {
         </div>
 
         <Reveal className="mt-20">
-          <h3 className="font-display text-3xl">Teaching, leadership & volunteering</h3>
-          <p className="mt-2 text-sm text-mute">Held alongside the full-time roles above.</p>
+          <h3 className="font-display text-3xl">{S.recognition.community}</h3>
+          <p className="mt-2 text-sm text-mute">{S.recognition.communityNote}</p>
           <ul className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2 lg:grid-cols-3">
             {cv.community.map((c) => (
               <li key={c.role} className="bg-bg p-6">
@@ -354,12 +357,15 @@ export default function Home() {
       <section id="contact" aria-labelledby="contact-title" className="scroll-mt-24 py-20 sm:py-28">
         <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-ink px-6 py-16 text-bg sm:px-14 sm:py-24">
           <span aria-hidden="true" className="absolute -end-28 -top-28 size-56 rounded-full bg-accent" />
-          <p className="relative font-mono text-xs uppercase tracking-[0.2em] opacity-70">07 / contact</p>
+          <p className="relative flex items-center gap-3">
+            <span className="grid h-11 min-w-11 place-items-center rounded-full bg-accent-inv px-3 font-mono text-base font-bold text-ink sm:h-12 sm:min-w-12">{S.contact.index}</span>
+            <span className="text-xl font-semibold uppercase tracking-[0.12em] sm:text-2xl">{S.contact.label}</span>
+          </p>
           <h2 id="contact-title" className="relative mt-6 max-w-3xl font-display text-5xl leading-[0.95] sm:text-7xl">
-            Let&apos;s build something <em className="text-accent-inv">together.</em>
+            {S.contact.title} <em className="text-accent-inv">{S.contact.titleEmphasis}</em>
           </h2>
           <p className="relative mt-6 max-w-lg text-lg opacity-80">
-            Based in {cv.location}. The fastest way to reach me is email.
+            {S.contact.text}
           </p>
 
           <div className="relative mt-10 flex flex-wrap items-center gap-3 [&_button]:border-bg/30 [&_button]:text-bg [&_button:hover]:border-bg">
@@ -395,7 +401,7 @@ export default function Home() {
           </dl>
           {!cv.contactIsLive && (
             <p className="relative mt-8 text-xs opacity-60">
-              These are the fictional contact details from the Portfolio Summit CV, shown as text rather than links.
+              {S.contact.fictionalNote}
             </p>
           )}
         </Reveal>
