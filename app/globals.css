@@ -15,8 +15,9 @@
   --ink-soft: #4a463d; /* body text */
   --ink-mute: #6b6559; /* labels, meta */
   --line: #ddd6c6; /* borders */
-  --accent: #c2380e; /* vermilion */
+  --accent: #1e6b52; /* deep emerald */
   --accent-ink: #ffffff; /* text on accent */
+  --accent-inv: #7dd8b8; /* accent on inverted (ink) panels */
   --grain-opacity: 0.35;
   color-scheme: light;
 }
@@ -28,8 +29,9 @@
   --ink-soft: #c2bcae;
   --ink-mute: #9a9487;
   --line: #2c2b27;
-  --accent: #ff6b3d;
-  --accent-ink: #120a06;
+  --accent: #5cc9a4;
+  --accent-ink: #08140f;
+  --accent-inv: #1e6b52;
   --grain-opacity: 0.18;
   color-scheme: dark;
 }
@@ -43,10 +45,12 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
+  --color-accent-inv: var(--accent-inv);
 
   --font-display: "Fraunces Variable", Georgia, serif;
   --font-sans: "Inter Tight Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-arabic: "Noto Kufi Arabic Variable", "Noto Kufi Arabic", sans-serif;
 }
 
 html {
@@ -206,4 +210,16 @@ body::before {
     flex-wrap: wrap;
     width: auto;
   }
+}
+
+/* Arabic display text */
+.font-arabic {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+}
+
+/* Rotate SVG parts around their own center */
+svg .origin-center {
+  transform-box: fill-box;
+  transform-origin: center;
 }

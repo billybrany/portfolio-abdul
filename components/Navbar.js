@@ -6,13 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { cv } from "@/data/cv";
 import { navLinks } from "@/lib/nav";
 import ThemeToggle from "@/components/ThemeToggle";
+import { withBase } from "@/lib/withBase";
 
-const initials = cv.name
-  .split(/\s+/)
-  .map((w) => w[0])
-  .join("")
-  .slice(0, 2)
-  .toUpperCase();
+const initials = cv.monogram;
 
 export function openPalette() {
   window.dispatchEvent(new Event("open-palette"));
@@ -27,22 +23,32 @@ export default function Navbar() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // Highlight the section currently on screen.
+  // Highlight the section currently on screen: the last section whose
+  // top has passed 40% of the viewport height.
   useEffect(() => {
     if (!isHome) return;
-    const sections = navLinks
-      .map((l) => document.getElementById(l.id))
-      .filter(Boolean);
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.4;
+      let current = "";
+      for (const l of navLinks) {
+        const el = document.getElementById(l.id);
+        if (el && el.getBoundingClientRect().top <= line) current = l.id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, [isHome]);
 
   // Border appears once the page is scrolled.
@@ -90,10 +96,10 @@ export default function Navbar() {
           <span className="grid size-10 place-items-center rounded-full bg-ink font-display text-sm italic text-bg transition-transform duration-500 group-hover:rotate-[360deg]">
             {initials}
           </span>
-          <span className="hidden font-medium md:inline">{cv.name}</span>
+          <span className="hidden font-medium xl:inline">{cv.name}</span>
         </Link>
 
-        <ul className="hidden items-center gap-1 rounded-full border border-line bg-elev/60 p-1 text-sm sm:flex">
+        <ul className="hidden items-center gap-0.5 rounded-full border border-line bg-elev/60 p-1 text-sm lg:flex">
           {navLinks.map((link) => {
             const isActive = isHome && active === link.id;
             return (
@@ -101,7 +107,7 @@ export default function Navbar() {
                 <Link
                   href={`/#${link.id}`}
                   aria-current={isActive ? "true" : undefined}
-                  className={`block rounded-full px-4 py-2 transition-colors ${
+                  className={`block rounded-full px-3.5 py-2 transition-colors ${
                     isActive
                       ? "bg-ink text-bg"
                       : "text-soft hover:text-ink"
@@ -131,7 +137,7 @@ export default function Navbar() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="grid size-10 place-items-center rounded-full bg-ink text-bg sm:hidden"
+            className="grid size-10 place-items-center rounded-full bg-ink text-bg lg:hidden"
           >
             <span className="relative block h-3 w-4" aria-hidden="true">
               <span
@@ -150,7 +156,7 @@ export default function Navbar() {
         id="mobile-menu"
         ref={menuRef}
         hidden={!open}
-        className="h-[calc(100dvh-65px)] overflow-y-auto border-t border-line bg-bg px-5 pb-10 pt-6 sm:hidden"
+        className="h-[calc(100dvh-65px)] overflow-y-auto border-t border-line bg-bg px-5 pb-10 pt-6 lg:hidden"
       >
         <ul className="space-y-1">
           {navLinks.map((link, i) => (
@@ -168,12 +174,16 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <a
-          href={`mailto:${cv.contact.email}`}
-          className="mt-8 inline-flex rounded-full bg-accent px-5 py-3 font-medium text-accent-ink"
-        >
-          {cv.contact.email}
-        </a>
+        {cv.cvFile && (
+          <a
+            href={withBase(`/${cv.cvFile}`)}
+            target="_blank"
+            rel="noopener"
+            className="mt-8 inline-flex rounded-full bg-accent px-5 py-3 font-medium text-accent-ink"
+          >
+            View résumé (PDF)
+          </a>
+        )}
       </div>
     </header>
   );

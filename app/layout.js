@@ -3,6 +3,7 @@ import "@fontsource-variable/fraunces/full.css";
 import "@fontsource-variable/fraunces/full-italic.css";
 import "@fontsource-variable/inter-tight";
 import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/noto-kufi-arabic";
 import "./globals.css";
 
 import Navbar from "@/components/Navbar";

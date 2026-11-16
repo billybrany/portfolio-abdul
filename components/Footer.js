@@ -5,8 +5,8 @@ export default function Footer() {
     <footer className="mt-10 border-t border-line">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm text-mute sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p>
-          © {new Date().getFullYear()} {cv.name}. Designed &amp; built with
-          Next.js.
+          © {new Date().getFullYear()} {cv.name}. Portfolio Summit 2026 ·
+          fictional CV; project visuals are concepts.
         </p>
         <div className="flex items-center gap-6">
           <p className="hidden lg:block">

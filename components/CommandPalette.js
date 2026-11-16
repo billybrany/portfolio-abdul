@@ -28,7 +28,7 @@ export default function CommandPalette() {
       ...cv.projects.map((p) => ({
         group: "Projects",
         label: p.name,
-        hint: p.tech.slice(0, 2).join(" · "),
+        hint: p.category,
         run: () => router.push(`/projects/${p.slug}/`),
       })),
       {
@@ -47,19 +47,16 @@ export default function CommandPalette() {
       { group: "Actions", label: "Switch light / dark", run: toggleTheme },
       cv.cvFile && {
         group: "Actions",
-        label: "Download CV",
+        label: "View résumé (PDF)",
         run: () => window.open(withBase(`/${cv.cvFile}`), "_blank"),
       },
-      cv.contact.github && {
-        group: "Links",
-        label: "GitHub",
-        run: () => window.open(cv.contact.github, "_blank", "noopener"),
-      },
-      cv.contact.linkedin && {
-        group: "Links",
-        label: "LinkedIn",
-        run: () => window.open(cv.contact.linkedin, "_blank", "noopener"),
-      },
+      ...(cv.contactIsLive
+        ? cv.contact.links.map((l) => ({
+            group: "Links",
+            label: l.label,
+            run: () => window.open(l.url, "_blank", "noopener"),
+          }))
+        : []),
     ];
     return list.filter(Boolean);
   }, [router]);
