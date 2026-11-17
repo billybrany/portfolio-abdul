@@ -7,7 +7,7 @@ import { cv } from "@/data/cv";
 // globals.css, chosen to sit on the warm paper background.
 export default function HeroArt() {
   return (
-    <div data-scroll-hue className="relative aspect-square w-full" aria-hidden="true">
+    <div data-scroll-hue className="relative aspect-square w-full [overflow:clip]" aria-hidden="true">
       {/* soft colored glow behind the circle */}
       <div className="hue-ring absolute inset-[16%] rounded-full opacity-40 blur-2xl dark:opacity-30" />
 
@@ -33,12 +33,23 @@ export default function HeroArt() {
         <rect x="70" y="282" width="46" height="46" rx="10" fill="var(--ink)" />
       </svg>
 
+      {/* the ring's own soft glow, and a pulse that radiates outward */}
+      <div className="hue-ring hue-ring-mask-wide absolute inset-[10.5%] rounded-full opacity-50 blur-[7px]" />
+      <div className="ring-pulse absolute inset-[12.5%] rounded-full" />
+      <div className="ring-pulse ring-pulse-2 absolute inset-[12.5%] rounded-full" />
+
       {/* the colored ring: a conic gradient that rotates with scroll */}
       <div className="hue-ring hue-ring-mask absolute inset-[12.5%] rounded-full" />
 
-      {/* orbiting dot */}
+      {/* orbiting dot: travels continuously (and with scroll), leaving a light
+          trail and a glow that follows it around the ring */}
       <div className="absolute inset-[12.5%]" style={{ transform: "rotate(calc(var(--rot, 0deg) * 1.6 + 40deg))" }}>
-        <span className="absolute left-1/2 top-0 size-[5%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bg bg-[var(--hue-1)]" />
+        <div className="orbit-spin absolute inset-0">
+          <div className="orbit-trail orbit-glow absolute -inset-[9%] rounded-full" />
+          <div className="orbit-trail orbit-line absolute -inset-[1.2%] rounded-full" />
+          <span className="orbit-halo absolute left-1/2 top-0 size-[13%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <span className="absolute left-1/2 top-0 size-[5%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bg bg-[var(--hue-5)]" />
+        </div>
       </div>
 
       <div className="absolute inset-0 grid place-items-center">

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronsUpDown } from "@/components/Icons";
 
 // Career timeline with expandable entries.
@@ -9,6 +9,35 @@ import { ArrowRight, ChevronsUpDown } from "@/components/Icons";
 export default function ExperienceList({ roles, projectNames }) {
   const [open, setOpen] = useState(() => new Set([0]));
   const allOpen = open.size === roles.length;
+  const list = useRef(null);
+
+  // Scroll → rail progress and lit nodes (direct style updates, no re-render).
+  useEffect(() => {
+    const el = list.current;
+    if (!el) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rect = el.getBoundingClientRect();
+      const line = window.innerHeight * 0.6;
+      const p = Math.min(Math.max((line - rect.top) / rect.height, 0), 1);
+      el.style.setProperty("--exp", p.toFixed(4));
+      el.querySelectorAll("[data-node]").forEach((n) => {
+        n.classList.toggle("is-on", n.getBoundingClientRect().top < line);
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [open]);
 
   const toggle = (i) =>
     setOpen((prev) => {
@@ -31,12 +60,17 @@ export default function ExperienceList({ roles, projectNames }) {
         </button>
       </div>
 
-      <ol className="relative border-t border-line">
+      {/* System rail: a line that fills as you scroll, with a node per role
+          that switches on once you reach it. */}
+      <ol ref={list} className="exp-rail relative border-t border-line ps-7 sm:ps-10">
+        <span aria-hidden="true" className="absolute bottom-0 left-[7px] top-0 w-px bg-line" />
+        <span aria-hidden="true" className="exp-progress absolute bottom-0 left-[6px] top-0 w-[3px] origin-top rounded-full bg-accent" />
         {roles.map((job, i) => {
           const isOpen = open.has(i);
           const id = `role-${i}`;
           return (
-            <li key={job.role + job.period} className="border-b border-line">
+            <li key={job.role + job.period} className="relative border-b border-line">
+              <span aria-hidden="true" data-node className="exp-node absolute -left-7 top-8 size-[15px] rounded-full border-2 border-line bg-bg sm:-left-10 sm:top-9" />
               <h3>
                 <button
                   type="button"

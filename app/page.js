@@ -13,6 +13,10 @@ import CopyEmail from "@/components/CopyEmail";
 import { ArrowDown, ArrowUpRight, FileText, Mail, Phone } from "@/components/Icons";
 import { BrandIcon } from "@/components/BrandIcon";
 import HeroArt from "@/components/HeroArt";
+import HeroField from "@/components/HeroField";
+import SystemDiagram from "@/components/SystemDiagram";
+import Contours from "@/components/Contours";
+import AwardsPlot from "@/components/AwardsPlot";
 import Parallax from "@/components/Parallax";
 
 // Splits a word into letters that rise in one by one.
@@ -71,7 +75,8 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section aria-labelledby="hero-title" className="pb-16 pt-10 sm:pt-16 lg:pb-24">
+      <section aria-labelledby="hero-title" className="relative isolate pb-16 pt-10 sm:pt-16 lg:pb-24">
+        <HeroField />
         <Reveal className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.18em] text-mute">
           <span className="inline-flex items-center gap-2 rounded-full border border-line bg-elev px-3 py-1.5 normal-case tracking-normal text-ink">
             <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
@@ -164,6 +169,7 @@ export default function Home() {
               “{cv.intro}”
             </blockquote>
             <p className="mt-6 text-soft">{site.aboutCurrently}</p>
+            <SystemDiagram skills={cv.skills} monogram={cv.monogram} />
           </Reveal>
           <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
             {cv.about.map((a, i) => (
@@ -246,14 +252,15 @@ export default function Home() {
                 as="li"
                 variant={i === 0 ? "scale" : i % 2 ? "left" : "right"}
                 delay={i === 0 ? 0 : 250 + i * 120}
-                className={`rounded-3xl border border-line p-6 sm:p-8 ${i === 0 ? "bg-ink text-bg md:col-span-3" : "bg-elev"}`}
+                className={`relative overflow-hidden rounded-3xl border border-line p-6 sm:p-8 ${i === 0 ? "bg-ink text-bg md:col-span-3" : "bg-elev"}`}
               >
-                <p className={`font-mono text-xs uppercase tracking-[0.16em] ${i === 0 ? "opacity-70" : "text-mute"}`}>{e.period}</p>
-                <h3 className={`mt-3 font-display leading-tight ${i === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>{e.degree}</h3>
-                <p className={`mt-2 ${i === 0 ? "text-accent-inv" : "text-accent"}`}>
+                {i === 0 && <Contours className="absolute -right-40 -top-24 size-[24rem] text-accent-inv opacity-30 md:-right-16 md:-top-28 md:size-[27rem] md:opacity-60" />}
+                <p className={`relative font-mono text-xs uppercase tracking-[0.16em] ${i === 0 ? "opacity-70" : "text-mute"}`}>{e.period}</p>
+                <h3 className={`relative mt-3 font-display leading-tight ${i === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>{e.degree}</h3>
+                <p className={`relative mt-2 ${i === 0 ? "text-accent-inv" : "text-accent"}`}>
                   {e.school} <span className={i === 0 ? "opacity-70" : "text-mute"}>· {e.location}</span>
                 </p>
-                <ul className={`mt-4 space-y-1 ${i === 0 ? "opacity-85" : "text-soft"}`}>
+                <ul className={`relative mt-4 space-y-1 ${i === 0 ? "opacity-85" : "text-soft"}`}>
                   {e.details.map((d) => <li key={d}>{d}</li>)}
                 </ul>
               </Reveal>
@@ -342,6 +349,9 @@ export default function Home() {
       {/* Its own motion identity: wipes, pops, flips and tilts (no slides or plain fades). */}
       <Section id="recognition" {...S.recognition} motion="pop">
         <h3 className="sr-only">Awards</h3>
+        <Reveal variant="draw" className="hidden sm:block">
+          <AwardsPlot awards={cv.awards} />
+        </Reveal>
         <ol className="border-t border-line">
           {cv.awards.map((a, i) => (
             <Reveal

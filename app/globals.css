@@ -602,3 +602,146 @@ a[href]:not(.rounded-full):active {
 #recognition {
   overflow-x: clip;
 }
+
+
+/* ════════════════════════════════════════════════════════════
+   ENGINEERING VISUAL LANGUAGE
+   ════════════════════════════════════════════════════════════ */
+
+/* Hero terrain: fades out towards the text at the top and at the sides */
+.hero-field {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 8%, #000 58%), linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 8%, #000 58%), linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* ── Yara circle: glow, radiating pulse, orbit trail ───────── */
+.hue-ring-mask-wide {
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 12px), transparent 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 12px), transparent 100%);
+}
+.ring-pulse {
+  border: 1.5px solid var(--hue-2);
+  opacity: 0;
+  animation: ring-pulse 5s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+}
+.ring-pulse-2 {
+  border-color: var(--hue-5);
+  animation-delay: 2.5s;
+}
+@keyframes ring-pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  70%, 100% { transform: scale(1.32); opacity: 0; }
+}
+.orbit-spin {
+  animation: orbit 14s linear infinite;
+}
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+/* the trail is a conic sweep that ends (brightest) at the dot */
+.orbit-trail {
+  background: conic-gradient(from 0deg, transparent 0 58%, color-mix(in srgb, var(--hue-5) 35%, transparent) 82%, var(--hue-5) 100%);
+}
+.orbit-line {
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+}
+.orbit-glow {
+  -webkit-mask: radial-gradient(farthest-side, transparent 62%, #000 84%, transparent 100%);
+  mask: radial-gradient(farthest-side, transparent 62%, #000 84%, transparent 100%);
+  filter: blur(10px);
+  opacity: 0.7;
+}
+.orbit-halo {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--hue-5) 75%, transparent), transparent);
+  animation: halo 2.4s ease-in-out infinite;
+}
+@keyframes halo {
+  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.55; }
+}
+
+/* ── Section ruler ticks ───────────────────────────────────── */
+.section-ruler {
+  background:
+    repeating-linear-gradient(90deg, var(--ink-mute) 0 1px, transparent 1px 60px) top left / 100% 8px no-repeat,
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 12px) top left / 100% 4px no-repeat;
+  opacity: 0.7;
+}
+
+/* ── About: system diagram ─────────────────────────────────── */
+.sys-node { cursor: default; }
+.sys-node rect { transition: stroke 0.3s ease, fill 0.3s ease; }
+.sys-dot { fill: var(--line); transition: fill 0.3s ease; }
+.sys-node:hover rect { stroke: var(--accent); }
+.sys-node:hover .sys-dot { fill: var(--accent); }
+.js .reveal .sys-wire {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(500ms + var(--d, 0ms));
+}
+.js .reveal.is-in .sys-wire { stroke-dashoffset: 0; }
+.sys-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sys-halo 3.2s ease-in-out infinite;
+}
+@keyframes sys-halo {
+  50% { transform: scale(1.18); stroke-opacity: 0.6; }
+}
+
+/* ── Experience: system rail ───────────────────────────────── */
+.exp-progress {
+  transform: scaleY(var(--exp, 0));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.exp-node {
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+.exp-node.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* ── Research: contour lines drift ─────────────────────────── */
+.contours path {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+}
+.contour-a { animation: orbit 90s linear infinite; }
+.contour-b { animation: orbit 120s linear infinite reverse; }
+
+/* ── Recognition: plot dots pop in ─────────────────────────── */
+.pop-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.js .reveal .pop-dot {
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.45, 0.64, 1);
+  transition-delay: var(--d, 0ms);
+}
+.js .reveal.is-in .pop-dot { transform: none; }
+
+/* Phones: lighter effects */
+@media (max-width: 767px) {
+  .orbit-glow { filter: blur(6px); }
+  .ring-pulse-2 { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-pulse,
+  .orbit-spin,
+  .orbit-halo,
+  .sys-halo,
+  .contour-a,
+  .contour-b { animation: none; }
+  .sys-pulse { display: none; }
+  .js .reveal .sys-wire { stroke-dashoffset: 0; }
+  .js .reveal .pop-dot { transform: none; }
+  .exp-node { transition: none; }
+}

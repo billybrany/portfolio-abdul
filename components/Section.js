@@ -9,8 +9,10 @@ export default function Section({ id, index, label, title, intro, motion, childr
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className="scroll-mt-24 border-t border-line py-20 sm:py-28"
+      className="relative scroll-mt-24 border-t border-line py-20 sm:py-28"
     >
+      {/* measurement ticks along the top rule, like a drawing sheet */}
+      <div aria-hidden="true" className="section-ruler absolute inset-x-0 top-0 h-2" />
       <Reveal className="mb-12 grid gap-4 sm:mb-16 sm:grid-cols-12">
         {/* Section tag: a vertical accent line beside the section name */}
         <p className="flex items-center gap-3.5 sm:col-span-3 sm:pt-3">

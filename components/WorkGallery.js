@@ -93,12 +93,13 @@ export default function WorkGallery({ projects, hint }) {
         const top = r.top + 8;
         const bottom = r.bottom - 24;
         const room = window.innerHeight - NAV;
-        const fits = bottom - top <= room;
-        const on = fits
-          ? top >= NAV - 8 && bottom <= window.innerHeight + 8 // cards fully in view
-          : top <= NAV + 8 && bottom >= window.innerHeight - 8; // too tall to fit: cards fill the view
+        const cardH = bottom - top;
         const shown = Math.max(0, Math.min(bottom, window.innerHeight) - Math.max(top, NAV));
-        const off = shown < Math.min(bottom - top, room) * 0.75;
+        // At least 90% of the cards in view (or 90% of the screen when they
+        // are taller than it). A full 100% would be skipped by a wheel notch
+        // on short screens, where the cards only just fit.
+        const on = shown >= Math.min(cardH, room) * 0.9;
+        const off = shown < Math.min(cardH, room) * 0.7;
         if (!ready.current && on) ready.current = true;
         else if (ready.current && off) ready.current = false;
         el.dataset.wheel = ready.current ? "on" : "off";
@@ -320,6 +321,13 @@ export default function WorkGallery({ projects, hint }) {
                     </p>
                     <h3 className="mt-2 font-display text-3xl leading-[1.05] transition-colors group-hover:text-accent sm:text-4xl">{p.name}</h3>
                     <p className="mt-2 max-w-xl text-soft">{p.summary}</p>
+                    {p.results?.[0] && (
+                      <p className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-t border-dashed border-line pt-3 font-mono text-xs uppercase tracking-[0.14em] text-mute">
+                        <span className="flex items-center gap-2"><span aria-hidden="true" className="size-1.5 bg-accent" />Key result</span>
+                        <span className="font-display text-2xl normal-case tracking-normal text-ink">{p.results[0].value}</span>
+                        <span>{p.results[0].label}</span>
+                      </p>
+                    )}
                     <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                       <ul className="flex flex-wrap gap-2" aria-label="Technologies">
                         {p.tech.slice(0, 3).map((t) => (
