@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "@/components/Icons";
 
 export default function NotFound() {
   return (
@@ -12,8 +13,9 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-8 inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-bg transition hover:bg-accent hover:text-accent-ink"
+        className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 font-medium text-bg transition hover:bg-accent hover:text-accent-ink"
       >
+        <ArrowLeft className="size-4" strokeWidth={2} aria-hidden="true" />
         Take me home
       </Link>
     </div>

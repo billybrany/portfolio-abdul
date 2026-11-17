@@ -434,3 +434,164 @@ section[tabindex="-1"]:focus {
 .gallery.is-dragging a {
   pointer-events: none;
 }
+
+/* ════════════════════════════════════════════════════════════
+   SECTION MOTION IDENTITIES
+   Used only by the Research and Recognition sections via
+   <Reveal variant="…">. Content is always visible without JS
+   (rules need html.js) and if the observer is missing.
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+/* ── Research: "progression": directional slides, scale, drawn lines ── */
+.js .reveal.rv-left:not(.is-in) { transform: translateX(-56px); }
+.js .reveal.rv-right:not(.is-in) { transform: translateX(56px); }
+.js .reveal.rv-scale:not(.is-in) { transform: scale(0.94); }
+.js .reveal.rv-rise:not(.is-in) { transform: translateY(40px) scale(0.98); }
+.js .reveal.rv-cascade:not(.is-in) { transform: translate(-14px, 22px); }
+.js .reveal.rv-left,
+.js .reveal.rv-right,
+.js .reveal.rv-scale {
+  transition-duration: 0.9s, 1s;
+}
+.js .reveal.rv-scale { transform-origin: 50% 0; }
+
+/* lines that draw themselves (connections, underlines, accent bars) */
+.js .reveal .draw-x,
+.js .reveal .draw-y {
+  transition: transform 0.9s var(--ease-out);
+  transition-delay: calc(var(--delay, 0ms) + var(--d, 150ms));
+}
+.js .reveal .draw-x { transform: scaleX(0); transform-origin: left; }
+.js .reveal .draw-y { transform: scaleY(0); transform-origin: top; }
+.js .reveal.is-in .draw-x,
+.js .reveal.is-in .draw-y { transform: none; }
+.js .reveal.rv-draw,
+.js .reveal.rv-underline { opacity: 1; transform: none; }
+
+/* Research heading words slide in from the left */
+.js .reveal .words-x > span { transform: translateX(-0.6em); }
+
+/* ── Recognition: "spotlight": wipes, pops, flips, tilts, springs ── */
+/* Wipe: a paper-colored cover with an accent leading edge sweeps off the
+   row left → right. The row itself never hides, so it can't get stuck. */
+.js .reveal.rv-wipe {
+  opacity: 1;
+  transform: none;
+}
+.js .reveal.rv-wipe::after {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--accent) 0 3px, var(--bg) 3px);
+  transform-origin: right;
+  transition: transform 0.95s var(--ease-out);
+  transition-delay: var(--delay, 0ms);
+}
+.js .reveal.rv-wipe.is-in::after {
+  transform: scaleX(0);
+}
+
+.js .reveal.rv-pop,
+.js .reveal.rv-spring {
+  transition:
+    opacity 0.5s ease var(--delay, 0ms),
+    transform 0.8s var(--ease-spring) var(--delay, 0ms);
+}
+.js .reveal.rv-pop:not(.is-in) { transform: scale(0.9); }
+.js .reveal.rv-spring:not(.is-in) { transform: translateY(26px) scale(0.92); }
+
+.js .reveal.rv-flip {
+  transform-origin: 50% 0;
+  transition:
+    opacity 0.45s ease var(--delay, 0ms),
+    transform 0.8s var(--ease-out) var(--delay, 0ms);
+}
+.js .reveal.rv-flip:not(.is-in) { transform: perspective(700px) rotateX(-75deg); }
+
+.js .reveal.rv-tilt-l:not(.is-in) { transform: translateY(34px) rotate(-3deg) scale(0.95); }
+.js .reveal.rv-tilt-r:not(.is-in) { transform: translateY(34px) rotate(3deg) scale(0.95); }
+.js .reveal.rv-tilt-l,
+.js .reveal.rv-tilt-r { transition-duration: 0.7s, 0.9s; }
+/* once an item has arrived, hover feedback is immediate */
+.js .reveal[class*="rv-"].settled {
+  transition-delay: 0ms;
+  transition-duration: 0.3s;
+}
+
+/* Recognition heading words pop up with a little spring */
+.js .reveal .words-pop > span {
+  transform: translateY(0.3em) scale(0.85);
+  transition-timing-function: ease, var(--ease-spring);
+}
+.js .reveal.is-in .words-pop > span,
+.js .reveal.is-in .words-x > span { transform: none; }
+
+/* ── Contact: completely static ───────────────────────────── */
+.static-zone *,
+.static-zone *::before,
+.static-zone *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.static-zone :where(a, button):is(:hover, :active, :focus-visible) {
+  transform: none !important;
+  box-shadow: none !important;
+}
+.static-section.arrived h2 { animation: none; }
+.static-section.arrived h2::after { display: none; }
+
+/* ── Reduced motion: these variants become simple fades ───── */
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal[class*="rv-"]:not(.is-in) {
+    transform: none;
+    clip-path: none;
+  }
+  .js .reveal.rv-wipe::after { display: none; }
+  .js .reveal.rv-wipe:not(.is-in) { opacity: 0; }
+  .js .reveal.rv-wipe { transition: opacity 0.7s ease var(--delay, 0ms); }
+  .js .reveal .draw-x,
+  .js .reveal .draw-y { transform: none; }
+  .js .reveal .words-x > span,
+  .js .reveal .words-pop > span { transform: none; }
+}
+
+/* ── Interactive elements: always look clickable ──────────── */
+a[href],
+button:not(:disabled),
+[role="tab"],
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+/* Gentle press feedback for plain links (pill buttons already scale) */
+a[href]:not(.rounded-full):active {
+  opacity: 0.75;
+}
+/* Icons inside links/buttons line up with the text */
+:where(a, button) > svg {
+  flex-shrink: 0;
+}
+/* The work gallery keeps its grab cursor */
+.gallery {
+  cursor: grab;
+}
+
+/* Hero greeting: a short accent line draws in before "Hi, I'm" */
+.js .greet-line {
+  transform-origin: left;
+  animation: greet-line 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.05s both;
+}
+@keyframes greet-line {
+  from { transform: scaleX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .greet-line { animation: none; }
+}

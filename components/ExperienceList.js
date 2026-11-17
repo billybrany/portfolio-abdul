@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ArrowRight, ChevronsUpDown } from "@/components/Icons";
 
 // Career timeline with expandable entries.
 // The first role starts open; "Expand all" opens every entry.
@@ -23,8 +24,9 @@ export default function ExperienceList({ roles, projectNames }) {
         <button
           type="button"
           onClick={() => setOpen(allOpen ? new Set() : new Set(roles.map((_, i) => i)))}
-          className="rounded-full border border-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-soft transition hover:border-ink hover:text-ink"
+          className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-soft transition hover:border-ink hover:text-ink"
         >
+          <ChevronsUpDown className="size-3.5" strokeWidth={2} aria-hidden="true" />
           {allOpen ? "Collapse all" : "Expand all"}
         </button>
       </div>
@@ -94,9 +96,10 @@ export default function ExperienceList({ roles, projectNames }) {
                           <Link
                             key={slug}
                             href={`/projects/${slug}/`}
-                            className="rounded-full bg-ink px-3 py-1 text-xs font-medium text-bg transition hover:bg-accent hover:text-accent-ink"
+                            className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1 text-xs font-medium text-bg transition hover:bg-accent hover:text-accent-ink"
                           >
-                            Case study: {projectNames[slug]} →
+                            Case study: {projectNames[slug]}
+                            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={2} aria-hidden="true" />
                           </Link>
                         ))}
                       </div>

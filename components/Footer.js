@@ -1,4 +1,5 @@
 import { cv } from "@/data/cv";
+import { ArrowUp } from "@/components/Icons";
 
 export default function Footer() {
   return (
@@ -15,8 +16,9 @@ export default function Footer() {
             </kbd>{" "}
             for the quick menu
           </p>
-          <a href="#main" className="link-u text-ink">
-            Back to top ↑
+          <a href="#main" className="group inline-flex items-center gap-1.5 text-ink">
+            <span className="link-u">Back to top</span>
+            <ArrowUp className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5" strokeWidth={2} aria-hidden="true" />
           </a>
         </div>
       </div>

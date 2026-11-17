@@ -6,8 +6,7 @@ import ArtCover from "@/components/ArtCover";
 // file isn't there yet. Images are never stretched, and never shown wider
 // than their real pixel width, so they stay sharp.
 //
-// fit="cover"   → card thumbnail: the design sits on the project's color and
-//                 bleeds off the bottom-right corner, like a product shot.
+// fit="cover"   → card thumbnail: the image fills the frame edge to edge.
 // fit="stage"   → case-study hero: centered on a colored panel, height capped.
 // fit="natural" → keeps its own ratio in a clean frame (window style).
 // device="mobile" images get a phone frame.
@@ -67,15 +66,12 @@ export default function ProjectVisual({
     );
   }
 
-  // Card thumbnail: bleed composition on the project color
+  // Card thumbnail: the image fills the whole frame (cropped, never stretched)
   if (fit === "cover") {
     return (
       <figure className={className}>
-        <div className="img-reveal relative overflow-hidden rounded-[1.25rem]" style={{ aspectRatio: ratio, background: project.art.bg }}>
-          <Dots color={project.art.fg} />
-          <div className={`absolute left-[8%] top-[10%] w-[92%] origin-top-left ${zoom}`}>
-            <img {...imgProps} alt={image.alt} className="block h-auto w-full rounded-tl-xl shadow-[0_24px_60px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/10" />
-          </div>
+        <div className="img-reveal relative overflow-hidden rounded-[1.25rem] border border-line bg-elev" style={{ aspectRatio: ratio }}>
+          <img {...imgProps} alt={image.alt} className={`absolute inset-0 h-full w-full object-cover object-top ${zoom}`} />
         </div>
         {caption && <Caption image={image} />}
       </figure>

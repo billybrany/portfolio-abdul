@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { cv } from "@/data/cv";
 import { withBase } from "@/lib/withBase";
@@ -9,6 +10,8 @@ import WorkGallery from "@/components/WorkGallery";
 import ExperienceList from "@/components/ExperienceList";
 import ShowMore from "@/components/ShowMore";
 import CopyEmail from "@/components/CopyEmail";
+import { ArrowDown, ArrowUpRight, FileText, Mail, Phone } from "@/components/Icons";
+import { BrandIcon } from "@/components/BrandIcon";
 import HeroArt from "@/components/HeroArt";
 import Parallax from "@/components/Parallax";
 
@@ -25,22 +28,32 @@ function RiseWord({ word, start = 0, className = "" }) {
   );
 }
 
-const Arrow = ({ down }) => (
-  <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d={down ? "M12 5v14M6 13l6 6 6-6" : "M5 12h14M13 6l6 6-6 6"} />
-  </svg>
-);
 
 const Label = ({ children }) => (
   <p className="font-mono text-xs uppercase tracking-[0.18em] text-mute">{children}</p>
 );
 
-// Link if the contact details are real, plain text if they are the CV's placeholders.
-function ContactLink({ href, children, className = "" }) {
-  if (!cv.contactIsLive) return <span className={className}>{children}</span>;
+// A contact platform tile. A real link (with ↗ and "opens in a new tab") when
+// the contact details are live; a no-op demo button while they're placeholders.
+function ContactLink({ href, label, children }) {
+  const base = "flex w-full items-center gap-3 rounded-xl border border-bg/15 px-3.5 py-2.5 text-start";
+  // Placeholder details: looks and feels like a link (pointer, ↗, hover,
+  // press, focus) but goes nowhere, since the CV's addresses are fictional.
+  if (!cv.contactIsLive)
+    return (
+      <button
+        type="button"
+        aria-label={`${label}: demo link (fictional CV, not a real profile)`}
+        className={`${base} cursor-pointer hover:border-bg/60 hover:bg-bg/10 active:bg-bg/20`}
+      >
+        {children}
+        <ArrowUpRight className="ms-auto size-4 shrink-0 opacity-60" strokeWidth={2} aria-hidden="true" />
+      </button>
+    );
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={`link-u ${className}`}>
+    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} (opens in a new tab)`} className={`${base} hover:border-bg/60 hover:bg-bg/10`}>
       {children}
+      <ArrowUpRight className="ms-auto size-4 shrink-0 opacity-60" strokeWidth={2} aria-hidden="true" />
     </a>
   );
 }
@@ -67,9 +80,14 @@ export default function Home() {
           <span>{site.heroKicker}</span>
         </Reveal>
 
-        <h1 id="hero-title" aria-label={`${cv.name}, ${cv.credentials}`} className="font-display text-[clamp(3.1rem,9.4vw,8.6rem)] leading-[0.9]">
-          <RiseWord word={first} />
-          <RiseWord word={last} start={first.length} className="italic text-accent" />
+        <h1 id="hero-title" aria-label={`${site.heroGreeting} ${cv.name}, ${cv.credentials}`} className="font-display text-[clamp(3.1rem,9.4vw,8.6rem)] leading-[0.9]">
+          {/* Greeting: smaller and lighter, so the name keeps its weight */}
+          <span className="mb-3 flex items-center gap-3 text-[clamp(1.6rem,3.4vw,2.6rem)] leading-none text-soft sm:mb-4" aria-hidden="true">
+            <span className="greet-line h-[2px] w-8 shrink-0 bg-accent sm:w-12" />
+            <RiseWord word={site.heroGreeting} className="italic" />
+          </span>
+          <RiseWord word={first} start={site.heroGreeting.length} />
+          <RiseWord word={last} start={site.heroGreeting.length + first.length} className="italic text-accent" />
         </h1>
 
         <div className="mt-10 grid gap-12 lg:mt-14 lg:grid-cols-12 lg:items-center">
@@ -83,18 +101,21 @@ export default function Home() {
             </Reveal>
             <Reveal delay={350}>
               <p className="mt-8 max-w-xl text-xl leading-snug text-soft sm:text-2xl">
-                <span className="text-ink">{cv.intro}</span> {site.heroLine}
+                {site.heroLine}
               </p>
             </Reveal>
             <Reveal delay={450} className="mt-10 flex flex-wrap gap-3">
               <Link href="#work" className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 font-medium text-bg transition hover:bg-accent hover:text-accent-ink">
                 {site.heroCtaWork}
-                <span className="transition-transform group-hover:translate-y-0.5"><Arrow down /></span>
+                <ArrowDown className="size-4 transition-transform duration-300 group-hover:translate-y-0.5" strokeWidth={2} aria-hidden="true" />
               </Link>
               {resume && (
-                <a href={resume} target="_blank" rel="noopener" className="inline-flex h-12 items-center gap-2 rounded-full border border-line px-6 font-medium transition hover:border-ink">
+                <a href={resume} target="_blank" rel="noopener" className="group inline-flex h-12 items-center gap-2 rounded-full border border-line px-5 font-medium transition hover:border-ink hover:bg-elev">
+                  <FileText className="size-4 text-soft transition-colors group-hover:text-ink" strokeWidth={1.8} aria-hidden="true" />
                   {site.heroCtaResume}
                   <span className="font-mono text-xs text-mute">PDF</span>
+                  <ArrowUpRight className="size-3.5 text-mute transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" strokeWidth={2} aria-hidden="true" />
+                  <span className="sr-only">(opens in a new tab)</span>
                 </a>
               )}
             </Reveal>
@@ -142,7 +163,7 @@ export default function Home() {
             <blockquote className="font-display text-3xl leading-tight sm:text-4xl">
               “{cv.intro}”
             </blockquote>
-            <p className="mt-6 text-soft">{cv.summary}</p>
+            <p className="mt-6 text-soft">{site.aboutCurrently}</p>
           </Reveal>
           <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
             {cv.about.map((a, i) => (
@@ -216,60 +237,92 @@ export default function Home() {
       </Section>
 
       {/* ── Education & research ─────────────────────────── */}
-      <Section id="research" {...S.research}>
-        <ol className="grid gap-5 md:grid-cols-3">
+      <Section id="research" {...S.research} motion="x">
+        {/* Education: PhD first (scales up), a line draws down and branches to the earlier degrees, which slide in from alternating sides. */}
+        <ol className="grid gap-5 md:grid-cols-3 md:gap-x-5 md:gap-y-0">
           {cv.education.map((e, i) => (
-            <Reveal as="li" key={e.degree} delay={(i % 2) * 90} className={`rounded-3xl border border-line p-6 sm:p-8 ${i === 0 ? "bg-ink text-bg md:col-span-3" : "bg-elev"}`}>
-              <p className={`font-mono text-xs uppercase tracking-[0.16em] ${i === 0 ? "opacity-70" : "text-mute"}`}>{e.period}</p>
-              <h3 className={`mt-3 font-display leading-tight ${i === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>{e.degree}</h3>
-              <p className={`mt-2 ${i === 0 ? "text-accent-inv" : "text-accent"}`}>
-                {e.school} <span className={i === 0 ? "opacity-70" : "text-mute"}>· {e.location}</span>
-              </p>
-              <ul className={`mt-4 space-y-1 ${i === 0 ? "opacity-85" : "text-soft"}`}>
-                {e.details.map((d) => <li key={d}>{d}</li>)}
-              </ul>
-            </Reveal>
+            <Fragment key={e.degree}>
+              <Reveal
+                as="li"
+                variant={i === 0 ? "scale" : i % 2 ? "left" : "right"}
+                delay={i === 0 ? 0 : 250 + i * 120}
+                className={`rounded-3xl border border-line p-6 sm:p-8 ${i === 0 ? "bg-ink text-bg md:col-span-3" : "bg-elev"}`}
+              >
+                <p className={`font-mono text-xs uppercase tracking-[0.16em] ${i === 0 ? "opacity-70" : "text-mute"}`}>{e.period}</p>
+                <h3 className={`mt-3 font-display leading-tight ${i === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>{e.degree}</h3>
+                <p className={`mt-2 ${i === 0 ? "text-accent-inv" : "text-accent"}`}>
+                  {e.school} <span className={i === 0 ? "opacity-70" : "text-mute"}>· {e.location}</span>
+                </p>
+                <ul className={`mt-4 space-y-1 ${i === 0 ? "opacity-85" : "text-soft"}`}>
+                  {e.details.map((d) => <li key={d}>{d}</li>)}
+                </ul>
+              </Reveal>
+              {i === 0 && (
+                <Reveal as="li" role="presentation" aria-hidden="true" variant="draw" className="relative hidden h-12 md:col-span-3 md:block">
+                  <span className="draw-y absolute left-1/2 top-0 h-1/2 w-px bg-accent" />
+                  <span className="draw-x absolute left-[16.66%] right-[16.66%] top-1/2 h-px bg-accent" style={{ "--d": "250ms" }} />
+                  {[16.66, 50, 83.33].map((x, k) => (
+                    <span key={x} className="draw-y absolute top-1/2 h-1/2 w-px bg-accent" style={{ left: `${x}%`, "--d": `${450 + k * 120}ms` }} />
+                  ))}
+                </Reveal>
+              )}
+            </Fragment>
           ))}
         </ol>
 
         <div className="mt-20 grid gap-14 lg:grid-cols-12">
-          <Reveal className="lg:col-span-5">
-            <h3 className="font-display text-3xl">{S.research.patents}</h3>
+          <div className="lg:col-span-5">
+            <Reveal variant="underline">
+              <h3 className="inline-block font-display text-3xl">
+                {S.research.patents}
+                <span aria-hidden="true" className="draw-x mt-1 block h-[3px] bg-accent" />
+              </h3>
+            </Reveal>
             <ul className="mt-6 space-y-4">
-              {cv.patents.map((p) => (
-                <li key={p.title} className="rounded-2xl border border-line bg-elev p-5">
+              {cv.patents.map((p, i) => (
+                <Reveal as="li" key={p.title} variant="rise" delay={150 + i * 160} className="relative overflow-hidden rounded-2xl border border-line bg-elev p-5 ps-6">
+                  <span aria-hidden="true" className="draw-y absolute inset-y-0 left-0 w-1 bg-accent" style={{ "--d": `${400 + i * 160}ms` }} />
                   <p className="font-mono text-xs uppercase tracking-widest text-accent">{p.status}</p>
                   <p className="mt-2 font-medium">{p.title}</p>
                   <p className="mt-1 text-sm text-mute">{p.number}</p>
-                </li>
+                </Reveal>
               ))}
             </ul>
-          </Reveal>
-          <Reveal delay={100} className="lg:col-span-7">
-            <h3 className="font-display text-3xl">{S.research.publications}</h3>
-            <p className="mt-2 text-sm text-mute">{cv.publicationsNote}</p>
+          </div>
+          <div className="lg:col-span-7">
+            <Reveal variant="underline">
+              <h3 className="inline-block font-display text-3xl">
+                {S.research.publications}
+                <span aria-hidden="true" className="draw-x mt-1 block h-[3px] bg-accent" />
+              </h3>
+              <p className="mt-2 text-sm text-mute">{cv.publicationsNote}</p>
+            </Reveal>
             <ol className="mt-6 border-t border-line">
-              {cv.publications.map((p) => (
-                <li key={p.title} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[4rem_1fr]">
+              {cv.publications.map((p, i) => (
+                <Reveal as="li" key={p.title} variant="right" delay={i * 90} className="group grid gap-1 border-b border-line py-4 transition-colors hover:bg-elev sm:grid-cols-[4rem_1fr] sm:px-2">
                   <span className="font-mono text-sm text-accent">{p.year}</span>
                   <span>
                     <span className="font-medium">{p.title}</span>
                     <span className="block text-sm text-soft">{p.authors} {p.venue}</span>
                   </span>
-                </li>
+                </Reveal>
               ))}
             </ol>
-          </Reveal>
+          </div>
         </div>
 
-        <Reveal className="mt-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h3 className="font-display text-3xl">{S.research.certifications}</h3>
+        <div className="mt-20">
+          <Reveal variant="underline" className="flex flex-wrap items-end justify-between gap-4">
+            <h3 className="inline-block font-display text-3xl">
+              {S.research.certifications}
+              <span aria-hidden="true" className="draw-x mt-1 block h-[3px] bg-accent" />
+            </h3>
             <p className="text-sm text-mute">{S.research.certificationsNote}</p>
-          </div>
+          </Reveal>
+          {/* Certifications cascade in a diagonal wave */}
           <ShowMore initial={6} label="certifications" className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {cv.certifications.map((c) => (
-              <li key={c.name} className="flex flex-col bg-bg p-5">
+            {cv.certifications.map((c, i) => (
+              <Reveal as="li" key={c.name} variant="cascade" delay={((i % 3) + Math.floor((i % 6) / 3)) * 90} className="flex flex-col bg-bg p-5">
                 <p className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-widest">
                   <span className="text-mute">{c.year || "—"}</span>
                   <span className={c.status === "Active" || c.status === "Lifetime" ? "text-ink" : c.status === "In progress" ? "text-accent" : "text-mute"}>
@@ -279,20 +332,31 @@ export default function Home() {
                 <p className="mt-2 font-medium leading-snug">{c.name}</p>
                 <p className="mt-1 text-sm text-soft">{c.issuer}</p>
                 <p className="mt-auto pt-3 font-mono text-[11px] text-mute">{c.id ? `ID ${c.id}` : c.note}</p>
-              </li>
+              </Reveal>
             ))}
           </ShowMore>
-        </Reveal>
+        </div>
       </Section>
 
       {/* ── Recognition ──────────────────────────────────── */}
-      <Section id="recognition" {...S.recognition}>
+      {/* Its own motion identity: wipes, pops, flips and tilts (no slides or plain fades). */}
+      <Section id="recognition" {...S.recognition} motion="pop">
         <h3 className="sr-only">Awards</h3>
         <ol className="border-t border-line">
           {cv.awards.map((a, i) => (
-            <Reveal as="li" key={a.title} delay={(i % 5) * 50} className="group grid gap-1 border-b border-line py-5 sm:grid-cols-12 sm:items-baseline sm:gap-6">
+            <Reveal
+              as="li"
+              key={a.title}
+              variant={a.major ? "pop" : "wipe"}
+              delay={i * 70}
+              className={`award group relative grid gap-1 border-b border-line py-5 ps-4 sm:grid-cols-12 sm:items-baseline sm:gap-6 ${a.major ? "bg-elev" : ""}`}
+            >
+              <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 origin-bottom bg-accent transition-transform duration-500 ${a.major ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"}`} />
               <span className="font-mono text-sm text-accent sm:col-span-1">{a.year}</span>
-              <span className="font-display text-xl leading-snug transition-colors group-hover:text-accent sm:col-span-5 sm:text-2xl">{a.title}</span>
+              <span className="font-display text-xl leading-snug transition-[color,transform] duration-300 group-hover:translate-x-1.5 group-hover:text-accent sm:col-span-5 sm:text-2xl">
+                {a.major && <span className="me-2 text-accent" aria-hidden="true">✦</span>}
+                {a.title}
+              </span>
               <span className="text-soft sm:col-span-3">{a.issuer}</span>
               <span className="text-sm text-mute sm:col-span-3">{a.for}</span>
             </Reveal>
@@ -300,46 +364,59 @@ export default function Home() {
         </ol>
 
         <div className="mt-20 grid gap-14 lg:grid-cols-2">
-          <Reveal>
-            <div className="flex items-baseline justify-between gap-4">
+          <div>
+            <Reveal variant="pop" className="flex items-baseline justify-between gap-4">
               <h3 className="font-display text-3xl">{S.recognition.speaking}</h3>
               <p className="text-sm text-mute">{cv.talksNote}</p>
-            </div>
+            </Reveal>
+            {/* Talks flip down like a departure board */}
             <ul className="mt-6 space-y-5">
-              {cv.talks.map((t) => (
-                <li key={t.title} className="grid grid-cols-[3.5rem_1fr] gap-3">
+              {cv.talks.map((t, i) => (
+                <Reveal as="li" key={t.title} variant="flip" delay={i * 80} className="grid grid-cols-[3.5rem_1fr] gap-3">
                   <span className="font-mono text-sm text-mute">{t.year}</span>
                   <span>
                     <span className="font-medium">“{t.title}”</span>
                     <span className="block text-sm text-soft">{t.type} · {t.event} · {t.city}</span>
                   </span>
-                </li>
+                </Reveal>
               ))}
             </ul>
-          </Reveal>
-          <Reveal delay={100}>
-            <h3 className="font-display text-3xl">{S.recognition.media}</h3>
+          </div>
+          <div>
+            <Reveal variant="pop">
+              <h3 className="font-display text-3xl">{S.recognition.media}</h3>
+            </Reveal>
+            {/* Media cards tilt into place from alternating angles */}
             <ul className="mt-6 grid gap-3">
-              {cv.media.map((m) => (
-                <li key={m.title} className="rounded-2xl border border-line bg-elev p-5">
+              {cv.media.map((m, i) => (
+                <Reveal
+                  as="li"
+                  key={m.title}
+                  variant={i % 2 ? "tilt-r" : "tilt-l"}
+                  delay={120 + i * 110}
+                  className="rounded-2xl border border-line bg-elev p-5 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:rotate-[-0.6deg] hover:border-ink hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)]"
+                >
                   <p className="flex justify-between gap-3 font-mono text-[11px] uppercase tracking-widest text-mute">
                     <span className="text-accent">{m.type}</span>
                     <span>{m.date}</span>
                   </p>
                   <p className="mt-2 font-display text-xl">{m.type === "YouTube channel" ? m.title : `“${m.title}”`}</p>
                   <p className="mt-1 text-sm text-soft">{m.outlet}</p>
-                </li>
+                </Reveal>
               ))}
             </ul>
-          </Reveal>
+          </div>
         </div>
 
-        <Reveal className="mt-20">
-          <h3 className="font-display text-3xl">{S.recognition.community}</h3>
-          <p className="mt-2 text-sm text-mute">{S.recognition.communityNote}</p>
+        <div className="mt-20">
+          <Reveal variant="pop">
+            <h3 className="font-display text-3xl">{S.recognition.community}</h3>
+            <p className="mt-2 text-sm text-mute">{S.recognition.communityNote}</p>
+          </Reveal>
+          {/* Community roles spring in, one after another */}
           <ul className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2 lg:grid-cols-3">
-            {cv.community.map((c) => (
-              <li key={c.role} className="bg-bg p-6">
+            {cv.community.map((c, i) => (
+              <Reveal as="li" key={c.role} variant="spring" delay={i * 90} className="bg-bg p-6 transition-colors duration-300 hover:bg-elev">
                 <p className="flex justify-between gap-3 font-mono text-[11px] uppercase tracking-widest">
                   <span className="text-accent">{c.kind}</span>
                   <span className="text-mute">{c.period}</span>
@@ -347,18 +424,19 @@ export default function Home() {
                 <p className="mt-3 font-medium">{c.role}</p>
                 <p className="text-sm text-soft">{c.org}</p>
                 <p className="mt-3 text-sm leading-relaxed text-soft">{c.detail}</p>
-              </li>
+              </Reveal>
             ))}
           </ul>
-        </Reveal>
+        </div>
       </Section>
 
       {/* ── Contact ──────────────────────────────────────── */}
-      <section id="contact" aria-labelledby="contact-title" className="scroll-mt-24 py-20 sm:py-28">
-        <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-ink px-6 py-16 text-bg sm:px-14 sm:py-24">
+      <section id="contact" aria-labelledby="contact-title" className="static-section scroll-mt-24 py-20 sm:py-28">
+        {/* Contact is intentionally static: no entrance, hover or scroll animation. */}
+        <div className="static-zone relative overflow-hidden rounded-[2.5rem] bg-ink px-6 py-16 text-bg sm:px-14 sm:py-24">
           <span aria-hidden="true" className="absolute -end-28 -top-28 size-56 rounded-full bg-accent" />
-          <p className="relative flex items-center gap-3">
-            <span className="font-mono text-xl font-bold text-bg sm:text-2xl">{S.contact.index}</span>
+          <p className="relative flex items-center gap-3.5">
+            <span aria-hidden="true" className="h-8 w-[3px] shrink-0 rounded-full bg-accent-inv sm:h-9" />
             <span className="text-xl font-semibold uppercase tracking-[0.12em] sm:text-2xl">{S.contact.label}</span>
           </p>
           <h2 id="contact-title" className="relative mt-6 max-w-3xl font-display text-5xl leading-[0.95] sm:text-7xl">
@@ -370,30 +448,49 @@ export default function Home() {
 
           <div className="relative mt-10 flex flex-wrap items-center gap-3 [&_button]:border-bg/30 [&_button]:text-bg [&_button:hover]:border-bg">
             {cv.contactIsLive ? (
-              <a href={`mailto:${cv.contact.email}`} className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-medium text-accent-ink transition hover:brightness-110">
-                {cv.contact.email} <Arrow />
+              <a href={`mailto:${cv.contact.email}`} className="inline-flex h-12 items-center gap-2.5 rounded-full bg-accent px-6 font-medium text-accent-ink hover:brightness-110">
+                <Mail className="size-[18px]" strokeWidth={1.8} aria-hidden="true" />
+                {cv.contact.email}
               </a>
             ) : (
-              <span className="inline-flex h-12 items-center rounded-full bg-accent px-6 font-medium text-accent-ink">{cv.contact.email}</span>
+              <span className="inline-flex h-12 items-center gap-2.5 rounded-full bg-accent px-6 font-medium text-accent-ink">
+                <Mail className="size-[18px]" strokeWidth={1.8} aria-hidden="true" />
+                {cv.contact.email}
+              </span>
             )}
             <CopyEmail email={cv.contact.email} />
             {resume && (
-              <a href={resume} target="_blank" rel="noopener" className="inline-flex h-12 items-center rounded-full border border-bg/30 px-5 text-sm font-medium transition hover:border-bg">
-                View résumé (PDF)
+              <a href={resume} target="_blank" rel="noopener" className="inline-flex h-12 items-center gap-2 rounded-full border border-bg/30 px-5 text-sm font-medium hover:border-bg hover:bg-bg/10">
+                <FileText className="size-4" strokeWidth={1.8} aria-hidden="true" />
+                {site.heroCtaResume} (PDF)
+                <ArrowUpRight className="size-3.5 opacity-70" strokeWidth={2} aria-hidden="true" />
+                <span className="sr-only">(opens in a new tab)</span>
               </a>
             )}
           </div>
 
           <dl className="relative mt-12 grid gap-6 border-t border-bg/20 pt-8 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-12">
-            <dt className="font-mono text-xs uppercase tracking-widest opacity-60">Phone</dt>
-            <dd>{cv.contact.phone}</dd>
-            <dt className="font-mono text-xs uppercase tracking-widest opacity-60">Online</dt>
+            <dt className="font-mono text-xs uppercase tracking-widest opacity-60 sm:pt-0.5">Phone</dt>
+            <dd className="flex items-center gap-2.5">
+              <Phone className="size-4 opacity-80" strokeWidth={1.8} aria-hidden="true" />
+              {cv.contactIsLive ? (
+                <a href={`tel:${cv.contact.phone.replace(/\s/g, "")}`} className="link-u">{cv.contact.phone}</a>
+              ) : (
+                cv.contact.phone
+              )}
+            </dd>
+            <dt className="font-mono text-xs uppercase tracking-widest opacity-60 sm:pt-3">Online</dt>
             <dd>
-              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+              <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
                 {cv.contact.links.map((l) => (
                   <li key={l.label}>
-                    <span className="opacity-60">{l.label}: </span>
-                    <ContactLink href={l.url}>{l.url.replace("https://", "")}</ContactLink>
+                    <ContactLink href={l.url} label={l.label}>
+                      <BrandIcon name={l.label} className="size-[18px] shrink-0" />
+                      <span className="min-w-0">
+                        <span className="block font-medium">{l.label}</span>
+                        <span className="block truncate text-xs opacity-60">{l.url.replace("https://", "")}</span>
+                      </span>
+                    </ContactLink>
                   </li>
                 ))}
               </ul>
@@ -404,7 +501,7 @@ export default function Home() {
               {S.contact.fictionalNote}
             </p>
           )}
-        </Reveal>
+        </div>
       </section>
     </>
   );

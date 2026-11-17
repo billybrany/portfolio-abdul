@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ProjectVisual from "@/components/ProjectVisual";
+import { ArrowLeft, ArrowRight } from "@/components/Icons";
 
 // Horizontal project gallery.
 //   • Native overflow scrolling with snap points (touch swipe + trackpad for free)
@@ -11,11 +12,12 @@ import ProjectVisual from "@/components/ProjectVisual";
 //   • ← → buttons (disabled at the ends), ← → keys when focused
 //   • Category tabs jump to a project and follow the scroll; the focused card
 //     fades to full strength while the others dim
-const Arrow = ({ dir = "right" }) => (
-  <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-    <path d={dir === "right" ? "M5 12h14M13 6l6 6-6 6" : "M19 12H5M11 6l-6 6 6 6"} />
-  </svg>
-);
+const Arrow = ({ dir = "right", className = "size-5" }) =>
+  dir === "right" ? (
+    <ArrowRight className={className} strokeWidth={1.8} aria-hidden="true" />
+  ) : (
+    <ArrowLeft className={className} strokeWidth={1.8} aria-hidden="true" />
+  );
 
 export default function WorkGallery({ projects, hint }) {
   const track = useRef(null);
@@ -291,8 +293,8 @@ export default function WorkGallery({ projects, hint }) {
                       </ul>
                       <span className="inline-flex items-center gap-2 font-medium">
                         View case study
-                        <span className="grid size-9 place-items-center rounded-full bg-ink text-bg transition-transform duration-500 group-hover:-rotate-45">
-                          <Arrow />
+                        <span className="grid size-9 place-items-center rounded-full bg-ink text-bg transition-[transform,background-color] duration-500 group-hover:-rotate-45 group-hover:bg-accent">
+                          <Arrow className="size-4" />
                         </span>
                       </span>
                     </div>

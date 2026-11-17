@@ -7,6 +7,7 @@ import { cv } from "@/data/cv";
 import { navLinks } from "@/lib/nav";
 import ThemeToggle from "@/components/ThemeToggle";
 import { withBase } from "@/lib/withBase";
+import { ArrowRight, ArrowUpRight, FileText, Search } from "@/components/Icons";
 
 const initials = cv.monogram;
 
@@ -127,10 +128,11 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openPalette}
-            className="hidden h-10 items-center gap-2 rounded-full border border-line px-3 font-mono text-xs text-mute transition hover:border-ink hover:text-ink lg:flex"
-            aria-label="Open quick menu"
+            className="hidden h-10 items-center gap-2 rounded-full border border-line pe-2 ps-3 text-xs text-mute transition hover:border-ink hover:text-ink lg:flex"
+            aria-label="Open quick menu (Ctrl or Command + K)"
           >
-            <kbd className="font-mono">⌘K</kbd>
+            <Search className="size-3.5" strokeWidth={2} aria-hidden="true" />
+            <kbd className="rounded border border-line px-1 font-mono">⌘K</kbd>
           </button>
           <ThemeToggle />
           <button
@@ -167,12 +169,11 @@ export default function Navbar() {
               <Link
                 href={`/#${link.id}`}
                 onClick={() => setOpen(false)}
-                className="flex items-baseline gap-4 border-b border-line py-4 font-display text-4xl"
+                className="group flex items-center gap-4 border-b border-line py-4 font-display text-4xl transition-colors active:text-accent"
               >
-                <span className="font-mono text-xs text-accent">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <span aria-hidden="true" className="h-8 w-[3px] shrink-0 rounded-full bg-accent" />
                 {link.label}
+                <ArrowRight className="ms-auto size-5 text-mute transition-transform group-hover:translate-x-1 group-hover:text-ink" strokeWidth={1.8} aria-hidden="true" />
               </Link>
             </li>
           ))}
@@ -182,9 +183,12 @@ export default function Navbar() {
             href={withBase(`/${cv.cvFile}`)}
             target="_blank"
             rel="noopener"
-            className="mt-8 inline-flex rounded-full bg-accent px-5 py-3 font-medium text-accent-ink"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-medium text-accent-ink"
           >
-            View résumé (PDF)
+            <FileText className="size-4" strokeWidth={1.8} aria-hidden="true" />
+            {cv.site.heroCtaResume} (PDF)
+            <ArrowUpRight className="size-4" strokeWidth={2} aria-hidden="true" />
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
         )}
       </div>
