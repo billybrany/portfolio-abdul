@@ -14,7 +14,6 @@ import { ArrowDown, ArrowUpRight, FileText, Mail, Phone } from "@/components/Ico
 import { BrandIcon } from "@/components/BrandIcon";
 import HeroArt from "@/components/HeroArt";
 import HeroField from "@/components/HeroField";
-import SystemDiagram from "@/components/SystemDiagram";
 import Contours from "@/components/Contours";
 import AwardsPlot from "@/components/AwardsPlot";
 import Parallax from "@/components/Parallax";
@@ -169,7 +168,6 @@ export default function Home() {
               “{cv.intro}”
             </blockquote>
             <p className="mt-6 text-soft">{site.aboutCurrently}</p>
-            <SystemDiagram skills={cv.skills} monogram={cv.monogram} />
           </Reveal>
           <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
             {cv.about.map((a, i) => (
