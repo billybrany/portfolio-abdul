@@ -118,9 +118,9 @@ export default function Home() {
               delay={(i % 4) * 80}
               className={`flex flex-col border-line py-7 sm:py-9 ${i % 2 ? "border-s ps-5 sm:ps-8" : "pe-5"} ${i >= 2 ? "border-t" : ""} lg:border-t-0 ${i % 4 ? "lg:border-s lg:ps-8" : "lg:ps-0"} ${i >= 4 ? "lg:border-t" : ""}`}
             >
-              <dt className="order-2 mt-2 text-sm text-soft">
+              <dt className="order-2 mt-3 text-lg font-medium leading-snug text-ink sm:text-xl">
                 {s.label}
-                {s.note && <span className="block text-xs text-mute">{s.note}</span>}
+                {s.note && <span className="mt-0.5 block text-sm font-normal text-soft sm:text-base">{s.note}</span>}
               </dt>
               <dd className="font-display text-5xl leading-none sm:text-6xl">
                 <AnimatedNumber value={`${s.value}${s.suffix || ""}`} />
@@ -358,7 +358,7 @@ export default function Home() {
         <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-ink px-6 py-16 text-bg sm:px-14 sm:py-24">
           <span aria-hidden="true" className="absolute -end-28 -top-28 size-56 rounded-full bg-accent" />
           <p className="relative flex items-center gap-3">
-            <span className="grid h-11 min-w-11 place-items-center rounded-full bg-accent-inv px-3 font-mono text-base font-bold text-ink sm:h-12 sm:min-w-12">{S.contact.index}</span>
+            <span className="font-mono text-xl font-bold text-bg sm:text-2xl">{S.contact.index}</span>
             <span className="text-xl font-semibold uppercase tracking-[0.12em] sm:text-2xl">{S.contact.label}</span>
           </p>
           <h2 id="contact-title" className="relative mt-6 max-w-3xl font-display text-5xl leading-[0.95] sm:text-7xl">

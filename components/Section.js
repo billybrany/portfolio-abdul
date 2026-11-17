@@ -15,7 +15,7 @@ export default function Section({ id, index, label, title, intro, children }) {
         {/* Section tag, e.g. "01  Work": large and easy to spot */}
         <p className="flex items-center gap-3 sm:col-span-3 sm:pt-3">
           {index && (
-            <span className="grid h-11 min-w-11 place-items-center rounded-full bg-accent px-3 font-mono text-base font-bold text-accent-ink sm:h-12 sm:min-w-12">
+            <span className="font-mono text-xl font-bold text-ink sm:text-2xl">
               {index}
             </span>
           )}
