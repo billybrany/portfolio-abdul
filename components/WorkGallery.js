@@ -298,16 +298,15 @@ export default function WorkGallery({ projects, hint }) {
           {projects.map((p, i) => {
             const on = i === active;
             return (
-              <article
+              <div
                 key={p.slug}
                 id={`card-${p.slug}`}
                 data-card
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${num(i)} of ${num(n - 1)}: ${p.name}`}
-                className={`w-[86%] shrink-0 snap-start transition-[opacity,filter] duration-700 ease-out sm:w-[72%] lg:w-[min(760px,56vw,calc((100svh-26rem)*1.6))] ${
-                  on ? "opacity-100" : "opacity-45 saturate-50"
-                }`}
+                data-active={on ? "true" : "false"}
+                className="gallery-card w-[86%] shrink-0 snap-start sm:w-[72%] lg:w-[min(760px,56vw,calc((100svh-26rem)*1.6))]"
               >
                 <Link
                   href={`/projects/${p.slug}/`}
@@ -343,7 +342,7 @@ export default function WorkGallery({ projects, hint }) {
                     </div>
                   </div>
                 </Link>
-              </article>
+              </div>
             );
           })}
           {/* spacer so the last card can snap to the start */}

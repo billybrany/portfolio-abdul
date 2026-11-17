@@ -92,15 +92,14 @@ export default function Navbar() {
         <Link
           href="/"
           className="group flex items-center gap-3"
-          aria-label={`${cv.name}, home`}
         >
           {/* mini Yara circle: its color ring turns with the page scroll */}
-          <span data-scroll-hue className="hue-ring grid size-10 place-items-center rounded-full p-[2px]">
+          <span aria-hidden="true" data-scroll-hue className="hue-ring grid size-10 place-items-center rounded-full p-[2px]">
             <span className="grid size-full place-items-center rounded-full bg-ink font-display text-sm italic text-bg transition-transform duration-500 group-hover:rotate-[360deg]">
               {initials}
             </span>
           </span>
-          <span className="hidden font-medium xl:inline">{cv.name}</span>
+          <span className="sr-only xl:not-sr-only xl:font-medium">{cv.name}</span>
         </Link>
 
         <ul className="hidden items-center gap-0.5 rounded-full border border-line bg-elev/60 p-1 text-sm lg:flex">
@@ -129,10 +128,10 @@ export default function Navbar() {
             type="button"
             onClick={openPalette}
             className="hidden h-10 items-center gap-2 rounded-full border border-line pe-2 ps-3 text-xs text-mute transition hover:border-ink hover:text-ink lg:flex"
-            aria-label="Open quick menu (Ctrl or Command + K)"
+            aria-label="⌘K Open quick menu (Ctrl or Command + K)"
           >
             <Search className="size-3.5" strokeWidth={2} aria-hidden="true" />
-            <kbd className="rounded border border-line px-1 font-mono">⌘K</kbd>
+            <kbd className="rounded border border-line px-1 font-mono text-soft">⌘K</kbd>
           </button>
           <ThemeToggle />
           <button

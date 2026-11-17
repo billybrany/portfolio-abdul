@@ -46,10 +46,10 @@ function ContactLink({ href, label, children }) {
     return (
       <button
         type="button"
-        aria-label={`${label}: demo link (fictional CV, not a real profile)`}
         className={`${base} cursor-pointer hover:border-bg/60 hover:bg-bg/10 active:bg-bg/20`}
       >
         {children}
+        <span className="sr-only"> (demo link, fictional CV)</span>
         <ArrowUpRight className="ms-auto size-4 shrink-0 opacity-60" strokeWidth={2} aria-hidden="true" />
       </button>
     );
@@ -256,7 +256,7 @@ export default function Home() {
                 <p className={`relative font-mono text-xs uppercase tracking-[0.16em] ${i === 0 ? "opacity-70" : "text-mute"}`}>{e.period}</p>
                 <h3 className={`relative mt-3 font-display leading-tight ${i === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>{e.degree}</h3>
                 <p className={`relative mt-2 ${i === 0 ? "text-accent-inv" : "text-accent"}`}>
-                  {e.school} <span className={i === 0 ? "opacity-70" : "text-mute"}>· {e.location}</span>
+                  {e.school} <span className={i === 0 ? "" : "text-mute"}>· {e.location}</span>
                 </p>
                 <ul className={`relative mt-4 space-y-1 ${i === 0 ? "opacity-85" : "text-soft"}`}>
                   {e.details.map((d) => <li key={d}>{d}</li>)}

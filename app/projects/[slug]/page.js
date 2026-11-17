@@ -236,8 +236,8 @@ export default async function ProjectPage({ params }) {
       {/* 9. Results */}
       <section className={`relative mt-24 overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-bg sm:px-12 sm:py-20`}>
         <Reveal>
-          <h2 className="flex items-baseline gap-3 font-mono text-xs uppercase tracking-[0.2em] opacity-70">
-            <span className="text-accent-inv">{num()}</span> Results
+          <h2 className="flex items-baseline gap-3 font-mono text-xs uppercase tracking-[0.2em]">
+            <span className="text-accent-inv">{num()}</span> <span className="opacity-75">Results</span>
           </h2>
         </Reveal>
         <dl className="mt-10 grid gap-x-10 gap-y-10 sm:grid-cols-2">

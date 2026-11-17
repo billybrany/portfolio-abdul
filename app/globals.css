@@ -720,3 +720,13 @@ a[href]:not(.rounded-full):active {
   .js .reveal .pop-dot { transform: none; }
   .exp-node { transition: none; }
 }
+
+/* Gallery: inactive cards dim only their image; text keeps full contrast. */
+.gallery-card figure,
+.gallery-card .px-2 {
+  transition: opacity 0.7s ease, filter 0.7s ease;
+}
+.gallery-card[data-active="false"] figure {
+  opacity: 0.45;
+  filter: saturate(0.5);
+}

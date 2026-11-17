@@ -119,7 +119,7 @@ function Dots({ color }) {
 
 function Caption({ image, center = false }) {
   return (
-    <figcaption className={`mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-xs text-mute ${center ? "justify-center text-center" : "justify-between"}`}>
+    <figcaption className={`mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-xs text-soft ${center ? "justify-center text-center" : "justify-between"}`}>
       <span>{image?.caption}</span>
       {!center && <span className="uppercase tracking-[0.16em]">Concept visual</span>}
     </figcaption>
