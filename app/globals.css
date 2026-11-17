@@ -595,3 +595,10 @@ a[href]:not(.rounded-full):active {
 @media (prefers-reduced-motion: reduce) {
   .js .greet-line { animation: none; }
 }
+
+/* Research & Recognition slide/tilt in from the sides; clip that sideways
+   overflow so phones never lay the page out wider than the screen. */
+#research,
+#recognition {
+  overflow-x: clip;
+}

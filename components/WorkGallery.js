@@ -79,9 +79,39 @@ export default function WorkGallery({ projects, hint }) {
 
     // Mouse wheel / vertical trackpad scroll → one project per gesture.
     // At the first or last project the page scrolls vertically as normal.
+    // ── Viewport-aware activation ──────────────────────────────
+    // The wheel only drives the gallery once the cards are fully on screen
+    // (or fill the whole view on very short screens where they can't fit).
+    // It switches off again only below ~75%, so it doesn't flicker at the edge.
+    const ready = { current: false };
+    const NAV = 64; // sticky navbar height
+    const thresholds = Array.from({ length: 21 }, (_, k) => k / 20);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        // Measure the cards themselves (the track has 8px top / 24px bottom padding).
+        const r = entry.boundingClientRect;
+        const top = r.top + 8;
+        const bottom = r.bottom - 24;
+        const room = window.innerHeight - NAV;
+        const fits = bottom - top <= room;
+        const on = fits
+          ? top >= NAV - 8 && bottom <= window.innerHeight + 8 // cards fully in view
+          : top <= NAV + 8 && bottom >= window.innerHeight - 8; // too tall to fit: cards fill the view
+        const shown = Math.max(0, Math.min(bottom, window.innerHeight) - Math.max(top, NAV));
+        const off = shown < Math.min(bottom - top, room) * 0.75;
+        if (!ready.current && on) ready.current = true;
+        else if (ready.current && off) ready.current = false;
+        el.dataset.wheel = ready.current ? "on" : "off";
+      },
+      { rootMargin: `-${NAV}px 0px 0px 0px`, threshold: thresholds },
+    );
+    io.observe(el);
+
     let lastWheel = 0;
     let lastStep = 0;
     const onWheel = (e) => {
+      if (!ready.current) return; // not fully in view yet: normal page scroll
+      if (e.ctrlKey) return; // pinch-zoom
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // sideways trackpad: native scrolling
       if (Math.abs(e.deltaY) < 1) return;
       const now = performance.now();
@@ -92,6 +122,7 @@ export default function WorkGallery({ projects, hint }) {
       const atEdge = dir > 0 ? i >= n - 1 : i <= 0 && el.scrollLeft <= 4;
       if (atEdge && now - lastStep > 600) return; // hand back to the page
       e.preventDefault();
+      e.stopPropagation();
       if (sameGesture && now - lastStep < 700) return; // one step per flick
       lastStep = now;
       if (!atEdge) goTo(i + dir);
@@ -101,6 +132,7 @@ export default function WorkGallery({ projects, hint }) {
     return () => {
       el.removeEventListener("scroll", onScroll);
       el.removeEventListener("wheel", onWheel);
+      io.disconnect();
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(frame);
     };
@@ -237,8 +269,11 @@ export default function WorkGallery({ projects, hint }) {
         </div>
       </div>
 
-      {/* Track: runs to the right edge of the window on large screens */}
-      <div className="relative lg:mr-[calc(50%-50vw)]">
+      {/* Track: on desktop it stops 72px before the window edge. That gutter is
+          the vertical-scroll escape zone: the wheel there scrolls the page,
+          never the gallery. The next card is cropped at the track edge. */}
+      <div className="relative lg:mr-[calc(50%-50vw+4.5rem)]">
+        <div aria-hidden="true" data-escape-zone className="absolute inset-y-0 left-full hidden w-[4.5rem] lg:block" />
         {/* edge fades: more projects this way */}
         <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 -left-5 z-10 w-10 sm:-left-8 bg-gradient-to-r from-bg to-transparent transition-opacity duration-500 sm:w-16 ${edges.start ? "opacity-0" : "opacity-100"}`} />
         <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-bg to-transparent transition-opacity duration-500 sm:w-16 ${edges.end ? "opacity-0" : "opacity-100"}`} />
@@ -269,7 +304,7 @@ export default function WorkGallery({ projects, hint }) {
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${num(i)} of ${num(n - 1)}: ${p.name}`}
-                className={`w-[86%] shrink-0 snap-start transition-[opacity,filter] duration-700 ease-out sm:w-[72%] lg:w-[min(760px,56vw)] ${
+                className={`w-[86%] shrink-0 snap-start transition-[opacity,filter] duration-700 ease-out sm:w-[72%] lg:w-[min(760px,56vw,calc((100svh-26rem)*1.6))] ${
                   on ? "opacity-100" : "opacity-45 saturate-50"
                 }`}
               >
@@ -304,7 +339,7 @@ export default function WorkGallery({ projects, hint }) {
             );
           })}
           {/* spacer so the last card can snap to the start */}
-          <div aria-hidden="true" className="w-[14%] shrink-0 sm:w-[28%] lg:w-[calc(100vw-min(760px,56vw)-6rem)]" />
+          <div aria-hidden="true" className="w-[calc(14%-1.25rem)] shrink-0 sm:w-[calc(28%-1.25rem)] lg:w-[calc(100%-min(760px,56vw,calc((100svh-26rem)*1.6))-2rem)]" />
         </div>
       </div>
       {hint && <p className="mt-2 hidden text-sm text-mute lg:block">{hint}</p>}
