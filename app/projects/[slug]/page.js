@@ -33,27 +33,63 @@ function Heading({ n, children }) {
   );
 }
 
-// Images for one part of the story. Two phone shots overlap; others stack.
-function Visuals({ project, images }) {
+// Images for one part of the story, each with its own composition:
+//   phones  → two screens overlapping on a soft panel
+//   offset  → single image shifted right over a block of the project color
+//   panel   → wide image framed on a light panel (e.g. statistics)
+//   split   → used beside text (Approach); plain window frame
+//   2 images → asymmetric 7/5 grid
+function Visuals({ project, images, layout = "split" }) {
   if (!images.length) return null;
   const phones = images.filter((i) => i.device === "mobile" && i.src);
+
   if (phones.length >= 2 && phones.length === images.length) {
     return (
-      <div className="relative mx-auto grid max-w-2xl grid-cols-2 items-start gap-4 sm:gap-10">
-        <Reveal className="sm:rotate-[-3deg]">
-          <ProjectVisual project={project} image={phones[0]} caption sizes="300px" />
-        </Reveal>
-        <Reveal delay={150} className="sm:translate-y-16 sm:rotate-[3deg]">
-          <ProjectVisual project={project} image={phones[1]} caption sizes="300px" />
-        </Reveal>
+      <div className="relative overflow-hidden rounded-[2rem] border border-line bg-elev px-4 pb-14 pt-12 sm:px-10 sm:pb-24 sm:pt-16">
+        <div aria-hidden="true" className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.14] blur-3xl" style={{ background: project.art.accent }} />
+        <div className="relative mx-auto grid max-w-xl grid-cols-2 items-start gap-4 sm:gap-8">
+          <Reveal className="sm:-rotate-3">
+            <ProjectVisual project={project} image={phones[0]} caption sizes="280px" />
+          </Reveal>
+          <Reveal delay={150} className="mt-10 sm:mt-20 sm:rotate-3">
+            <ProjectVisual project={project} image={phones[1]} caption sizes="280px" />
+          </Reveal>
+        </div>
       </div>
     );
   }
+
+  if (images.length === 1 && layout === "offset") {
+    const img = images[0];
+    return (
+      <Reveal className="relative pt-6 lg:ps-[14%]">
+        <div aria-hidden="true" className="absolute bottom-14 left-0 top-[18%] w-[72%] rounded-[2rem] sm:bottom-16 sm:w-[58%]" style={{ background: project.art.bg }} />
+        <ProjectVisual project={project} image={img} caption className="relative ms-auto ps-5 sm:ps-10 lg:ps-0" sizes="(min-width: 1024px) 990px, 100vw" />
+      </Reveal>
+    );
+  }
+
+  if (images.length === 1 && layout === "panel") {
+    return (
+      <Reveal className="rounded-[2rem] border border-line bg-elev p-4 sm:p-8 lg:p-10">
+        <ProjectVisual project={project} image={images[0]} caption className="mx-auto" sizes="(min-width: 1024px) 1070px, 100vw" />
+      </Reveal>
+    );
+  }
+
+  if (images.length === 1) {
+    return (
+      <Reveal>
+        <ProjectVisual project={project} image={images[0]} caption sizes="(min-width: 1024px) 760px, 100vw" />
+      </Reveal>
+    );
+  }
+
   return (
-    <div className={`grid gap-6 ${images.length > 1 ? "md:grid-cols-2" : ""}`}>
+    <div className="grid items-start gap-6 md:grid-cols-12">
       {images.map((img, i) => (
-        <Reveal key={img.file} delay={i * 120}>
-          <ProjectVisual project={project} image={img} caption sizes={images.length > 1 ? "(min-width: 768px) 560px, 100vw" : "(min-width: 1024px) 1150px, 100vw"} />
+        <Reveal key={img.file} delay={i * 120} className={i % 2 === 0 ? "md:col-span-7" : "md:col-span-5 md:mt-16"}>
+          <ProjectVisual project={project} image={img} caption sizes="(min-width: 768px) 640px, 100vw" />
         </Reveal>
       ))}
     </div>
@@ -135,7 +171,7 @@ export default async function ProjectPage({ params }) {
 
       {/* 2. Main visual */}
       <Reveal className="mt-12">
-        <ProjectVisual project={project} image={main} ratio="16 / 9" priority caption sizes="(min-width: 1200px) 1150px, 100vw" />
+        <ProjectVisual project={project} image={main} fit="stage" priority caption sizes="(min-width: 1200px) 900px, 92vw" />
       </Reveal>
 
       {/* 3–4. Overview + role */}
@@ -167,8 +203,8 @@ export default async function ProjectPage({ params }) {
       </section>
 
       {/* 7. Approach (split screen with its image) */}
-      <section className={`mt-24 grid items-center gap-12 ${approachImgs.length ? "lg:grid-cols-12" : ""}`}>
-        <Reveal className={approachImgs.length ? "lg:col-span-4" : "max-w-3xl"}>
+      <section className={`mt-24 grid items-start gap-10 lg:gap-12 ${approachImgs.length ? "lg:grid-cols-12" : ""}`}>
+        <Reveal className={approachImgs.length ? "lg:sticky lg:top-28 lg:col-span-4 lg:pt-6" : "max-w-3xl"}>
           <Heading n={num()}>Approach</Heading>
           <p className="mt-5 text-xl leading-relaxed">{project.approach}</p>
         </Reveal>
@@ -187,13 +223,13 @@ export default async function ProjectPage({ params }) {
         </Reveal>
         {solutionImgs.length > 0 && (
           <div className="mt-12">
-            <Visuals project={project} images={solutionImgs} />
+            <Visuals project={project} images={solutionImgs} layout="offset" />
           </div>
         )}
       </section>
 
       {/* 9. Results */}
-      <section className={`relative mt-24 overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-bg sm:px-12 sm:py-20 ${solutionImgs.some((x) => x.device === "mobile" && x.src) ? "sm:mt-36" : ""}`}>
+      <section className={`relative mt-24 overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-bg sm:px-12 sm:py-20`}>
         <Reveal>
           <h2 className="flex items-baseline gap-3 font-mono text-xs uppercase tracking-[0.2em] opacity-70">
             <span className="text-accent-inv">{num()}</span> Results
@@ -220,7 +256,7 @@ export default async function ProjectPage({ params }) {
       </section>
       {resultImgs.length > 0 && (
         <div className="mt-10">
-          <Visuals project={project} images={resultImgs} />
+          <Visuals project={project} images={resultImgs} layout="panel" />
         </div>
       )}
 
